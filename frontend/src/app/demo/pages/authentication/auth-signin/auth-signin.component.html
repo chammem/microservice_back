@@ -24,7 +24,7 @@
             <label for="checkbox-fill-a1" class="cr">Save Details</label>
           </div>
         </div>
-        <button class="btn btn-primary mb-4">Login</button>
+        <button (click)="login()" class="btn btn-primary mb-4">Login</button>
         <p class="mb-2 text-muted">
           Forgot password?
           <a [routerLink]="['/auth/reset-password']">Reset</a>

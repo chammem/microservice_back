@@ -19,7 +19,7 @@ public class GatewayApplication {
 
         return builder.routes()
                 .route("commandes", r->r.path("/commandes/**")
-                        .uri("http://commande-service:8086"))
+                        .uri("http://localhost:8086"))
                 .build();
     }
 }
