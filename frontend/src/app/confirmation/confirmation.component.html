@@ -1,0 +1,51 @@
+<div class="container">
+    <div class="header">
+      <h1>SMIC</h1>
+      <p>Zone industrielle Sidi Rezig Megrine, Ben Arous</p>
+      <p>Tél: 50029300</p>
+    </div>
+  
+    <div class="info-box">
+      <div class="client-info">
+        <p *ngIf="nomClient && nomClient !== ''">Client: {{ nomClient }} {{ prenomClient }}</p>
+        <p *ngIf="adresseClient && adresseClient !== ''">Adresse: {{ adresseClient }}</p>
+      </div>
+      <div class="order-info">
+        <p>Numéro de commande: <strong>{{ orderId }}</strong></p>
+        <p>Date: {{ today | date:'dd MMM yyyy' }}</p>
+      </div>
+    </div>
+  
+    <table>
+        <thead>
+          <tr>
+            <th>Désignation</th>
+            <th>Prix unitaire</th>
+            <th>Remise</th>
+            <th>Sous-total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of orderItems">
+            <td>{{ item.nom }}</td>
+            <td>{{ item.prix }} TND</td>
+            <td>0 TND</td>
+            <td>{{ item.prix }} TND</td>
+          </tr>
+        </tbody>
+      </table>
+      
+    
+      
+    <div class="total">
+      <p><strong>Sous-total:</strong> {{ subTotal }} TND</p>
+      <p><strong>Livraison:</strong> {{ shipping }} TND</p>
+      <p><strong>Total:</strong> <span class="bold">{{ total }} TND</span></p>
+    </div>
+  
+    <div class="footer">
+      <p>Merci pour votre commande</p>
+      <button  [routerLink]="'/'"  class="button">Revenir à la page d'accueil</button>
+    </div>
+  </div>
+  

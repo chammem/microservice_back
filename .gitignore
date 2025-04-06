@@ -1,3 +1,11 @@
+# Ignorer le fichier docker-compose.yml
+docker-compose.yml
+
+# Ignorer les fichiers Docker
+*.tar
+*.tar.gz
+
+# Pour le backend Spring Boot
 HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
@@ -31,3 +39,80 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Node.js dependencies
+node_modules/
+
+# Angular build output
+/dist/
+/out-tsc/
+/e2e/
+
+# Docker files
+.docker/
+
+# Logs
+*.log
+
+# Pour le frontend Angular
+# compiled output
+/dist
+/tmp
+/out-tsc
+# Only exists if Bazel was run
+/bazel-out
+
+# dependencies
+/node_modules
+frontend/volume
+frontend/volume/
+frontend/volume/web/deploy/plugins/javascript/
+/volume
+
+# profiling files
+chrome-profiler-events*.json
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*
+
+# misc
+/.sass-cache
+/connect.lock
+/coverage
+/libpeerconnection.log
+npm-debug.log
+yarn-error.log
+testem.log
+/typings
+
+# System Files
+.DS_Store
+Thumbs.db
+
+# Fichiers spécifiques à l'IDE
+*.iml
+
+docker-compose.yml
+
+# Fichiers volumineux
+**/*.jar
+**/*.mv.db
+**/node_modules/
+**/target/
+**/dist/
+**/.sonar/
+**/volume/

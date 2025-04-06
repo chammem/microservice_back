@@ -1,0 +1,159 @@
+$primary-color: #5c6a83; // Couleur orange pour le fond de la navbar
+$secondary-color: #adb7be; // Couleur noire pour le fond actif
+$text-color: #fff; // Couleur blanche pour le texte
+$font-family: Arial, sans-serif;
+$font-size: 14px;
+$gap: 15px;
+$padding: 10px 20px;
+$transition: all 0.3s ease;
+
+// Styles généraux
+.header {
+  width: 100%;
+  font-family: $font-family;
+  font-size: $font-size;
+
+  // Header Top
+  .header__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: $padding;
+    background: $primary-color; // Fond orange pour la navbar
+    color: $text-color;
+    width: 100%;
+
+    .header__top__inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    // Logo à gauche
+    .header__logo {
+      img {
+        height: 40px;
+      }
+    }
+
+    // Menu de navigation au centre
+    .header__menu {
+      flex-grow: 1;
+      display: flex;
+      justify-content: center;
+
+      ul {
+        display: flex;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        gap: $gap;
+
+        li {
+          position: relative;
+          padding: $padding;
+          color: $text-color; // Texte en blanc
+          cursor: pointer;
+          font-weight: bold;
+          transition: $transition;
+
+          &.active {
+            background: $secondary-color; // Fond noir pour l'élément actif (Home)
+          }
+
+          &:hover {
+            background: rgba(0, 0, 0, 0.2); // Fond légèrement plus sombre au survol
+          }
+
+          // Dropdown pour "Pages"
+          .dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: $secondary-color; // Fond noir pour le sous-menu
+            list-style: none;
+            padding: 10px;
+            margin: 0;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: $transition;
+
+            li {
+              padding: 5px 0;
+              color: $text-color; // Texte en blanc dans le sous-menu
+
+              &:hover {
+                background: rgba(255, 255, 255, 0.1); // Fond légèrement plus clair au survol
+              }
+            }
+          }
+
+          // Garder le sous-menu visible lors du survol
+          &:hover .dropdown,
+          .dropdown:hover {
+            display: block;
+            opacity: 1;
+            visibility: visible;
+          }
+
+          a {
+            color: $text-color; // Texte en blanc
+            text-decoration: none;
+
+            &:hover {
+              color: $text-color; // Texte reste en blanc au survol
+            }
+          }
+        }
+      }
+    }
+
+    // Section droite : Icônes et login
+    .header__top__right {
+      .header__top__right__links {
+        display: flex;
+        gap: $gap;
+        align-items: center;
+
+        a {
+          color: $text-color; // Texte en blanc
+          text-decoration: none;
+          font-size: 16px;
+          transition: $transition;
+
+          &:hover {
+            opacity: 0.8;
+          }
+
+          i {
+            font-size: 20px; // Taille des icônes
+          }
+        }
+      }
+    }
+  }
+}
+
+// Media Queries pour le responsive
+@media (max-width: 768px) {
+  .header__top__inner {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .header__top__left .header__top__left__links,
+  .header__menu ul {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .header__menu ul li {
+    width: 100%;
+    text-align: center;
+  }
+}

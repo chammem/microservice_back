@@ -1,0 +1,64 @@
+<div class="cart-container">
+    <div class="cart-items">
+      <h2>Shopping cart</h2>
+      <table class="cart-table">
+        <thead>
+          <tr>
+            <th>PRODUCT</th>
+            <th>QUANTITY</th>
+            <th>TOTAL</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of cartItems">
+            <!-- Colonne PRODUIT -->
+            <td class="product-info">
+              <img [src]="item.image" alt="{{ item.name }}" class="product-image">
+              <div class="product-details">
+                <span class="product-name">{{ item.name }}</span>
+                <span class="product-price"><strong>${{ item.price.toFixed(2) }}</strong></span>
+              </div>
+            </td>
+  
+            <!-- Colonne QUANTITÉ -->
+            <td class="quantity">
+              <div class="quantity-controls">
+                <button (click)="decreaseQuantity(item)">-</button>
+                <span>{{ item.quantity }}</span>
+                <button (click)="increaseQuantity(item)">+</button>
+              </div>
+            </td>
+  
+            <!-- Colonne TOTAL -->
+            <td class="total-price">
+              <strong>${{ (item.price * item.quantity).toFixed(2) }}</strong>
+            </td>
+  
+            <!-- Bouton SUPPRIMER -->
+            <td>
+              <button class="remove-btn" (click)="removeItem(item)">×</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  
+    <!-- Section RÉSUMÉ DU PANIER -->
+    <div class="cart-summary">
+      <div class="discount-section">
+        <h3>DISCOUNT CODES</h3>
+        <div class="discount-input">
+          <input type="text" placeholder="Coupon code">
+          <button class="apply-btn">APPLY</button>
+        </div>
+      </div>
+      <div class="cart-total">
+        <h3>CART TOTAL</h3>
+        <p>Subtotal <span>${{ getSubtotal().toFixed(2) }}</span></p>
+        <p>Shipping <span>${{ shippingCost.toFixed(2) }}</span></p>
+        <p class="total">Total <span>${{ (getSubtotal() + shippingCost).toFixed(2) }}</span></p>
+        <button [routerLink]="'/commande'" class="checkout-btn">PROCEED TO CHECKOUT</button>
+    </div>
+    </div>
+  </div>
