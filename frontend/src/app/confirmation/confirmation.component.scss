@@ -1,0 +1,94 @@
+// Variables
+$primary-color: black;
+$secondary-color: #f8f8f8;
+$border-color: #ddd;
+$header-bg: #333;
+$header-text: white;
+
+.container {
+    max-width: 800px;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 40px auto; // Ajout d'un margin en haut et en bas
+  }
+  
+  .header, .footer {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+
+.date {
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  background: $secondary-color;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+
+  th, td {
+    padding: 10px;
+    border: 1px solid $border-color;
+    text-align: center;
+  }
+
+  th {
+    background: $header-bg;
+    color: $header-text;
+  }
+}
+
+.total {
+  text-align: right;
+  font-weight: bold;
+
+  .bold {
+    font-size: 1.2em;
+    color: $primary-color;
+  }
+}
+
+.button {
+  display: block;
+  width: 200px;
+  text-align: center;
+  background: $primary-color;
+  color: white;
+  text-decoration: none;
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  margin: auto;
+}
+.container {
+    max-width: 800px;
+    margin: auto;
+  }
+  
+  .info-box {
+    display: flex;
+    justify-content: space-between;
+    background: #f8f9fc;
+    padding: 10px 20px;
+    border-radius: 5px;
+  }
+  
+  .client-info, .order-info {
+    font-size: 14px;
+  }
+  

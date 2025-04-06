@@ -1,0 +1,78 @@
+<div class="order-container">
+  <!-- Formulaire de commande à gauche -->
+  <div class="order-form">
+    <h2>BILLING DETAILS</h2>
+    <form [formGroup]="f" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="nomClient">Nom*</label>
+        <input type="text" id="nomClient" formControlName="nomClient" required>
+        <div class="error" *ngIf="f.get('nomClient')?.invalid && f.get('nomClient')?.touched">
+          Nom requis
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="prenomClient">Prénom*</label>
+        <input type="text" id="prenomClient" formControlName="prenomClient" required>
+        <div class="error" *ngIf="f.get('prenomClient')?.invalid && f.get('prenomClient')?.touched">
+          Prénom requis
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="adresseClient">Adresse*</label>
+        <input type="text" id="adresseClient" formControlName="adresseClient" required>
+        <div class="error" *ngIf="f.get('adresseClient')?.invalid && f.get('adresseClient')?.touched">
+          Adresse requise
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="codePostal">Code Postal*</label>
+        <input type="text" id="codePostal" formControlName="codePostal" required>
+        <div class="error" *ngIf="f.get('codePostal')?.invalid && f.get('codePostal')?.touched">
+          Code postal requis
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="telephone">Numéro de Téléphone*</label>
+        <input type="tel" id="telephone" formControlName="telephone" required>
+        <div class="error" *ngIf="f.get('telephone')?.invalid && f.get('telephone')?.touched">
+          Numéro de téléphone invalide (8 à 15 chiffres)
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Adresse Email*</label>
+        <input type="email" id="email" formControlName="email" required>
+        <div class="error" *ngIf="f.get('email')?.invalid && f.get('email')?.touched">
+          Adresse e-mail invalide
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="notes">Order Notes</label>
+        <textarea id="notes" formControlName="notes" rows="4"></textarea>
+      </div>
+
+      <button type="submit" class="submit-btn" [disabled]="f.invalid">Passer la commande</button>
+    </form>
+  </div>
+
+  <!-- Récapitulatif de la commande -->
+  <div class="order-summary">
+    <h2>Votre Commande</h2>
+    <div class="product-list">
+      <div class="product-item" *ngFor="let produit of produits">
+        <span class="product-name">{{ produit.nom }}</span>
+        <span class="product-price">${{ produit.prix }}</span>
+      </div>
+    </div>
+    <div class="order-total">
+      <p>Subtotal <span>${{ totalCommande }}</span></p>
+      <p>Total <span>${{ totalCommande }}</span></p>
+    </div>
+  </div>
+</div>
+

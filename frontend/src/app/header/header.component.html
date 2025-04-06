@@ -1,0 +1,46 @@
+<header class="header">
+    <div class="header__top">
+      <div class="container">
+        <div class="header__top__inner">
+          <!-- Logo à gauche -->
+          <div class="header__logo">
+            <a href="#"><img src="assets/images/logo.png" alt="Logo"></a>
+          </div>
+
+          <!-- Menu de navigation au centre -->
+          <nav class="header__menu" aria-label="Main navigation">
+            <ul>
+              <li class="active"><a href="#">Home</a></li>
+              <li><a href="#">About</a></li>
+              <li><a href="#">Shop</a></li>
+              <li aria-haspopup="true">
+                <a href="#">Pages</a>
+                <ul class="dropdown" aria-label="Pages dropdown">
+                  <li><a href="#">Shop Details</a></li>
+                  <li><a href="#">Shoping Cart</a></li>
+                  <li><a href="#">Check Out</a></li>
+                  <li><a href="#">Wishlist</a></li>
+                  <li><a href="#">Class</a></li>
+                  <li><a href="#">Blog Details</a></li>
+                </ul>
+              </li>
+              <li><a href="#">Blog</a></li>
+              <li><a href="#">Contact</a></li>
+            </ul>
+          </nav>
+
+          <!-- Section droite : Icônes de recherche, favoris, panier et login -->
+          <div class="header__top__right">
+            <div class="header__top__right__links">
+              <a href="#" class="search-switch" aria-label="Search"><i class="fa fa-search"></i></a>
+              <a href="#" aria-label="Favorites"><i class="fa fa-heart"></i></a>
+              <a routerLink="/panier"aria-label="Cart"><i class="fa fa-shopping-cart"></i> <span>0</span></a>
+              <a routerLink="/auth/signin" aria-label="Sign in">
+                <i class="fa fa-user"></i>
+              </a>
+                          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
