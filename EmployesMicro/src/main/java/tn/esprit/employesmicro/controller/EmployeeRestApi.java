@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import tn.esprit.employesmicro.entity.Employee;
 import tn.esprit.employesmicro.entity.Shift;
 import tn.esprit.employesmicro.service.IService;
+import tn.esprit.employesmicro.service.MailService;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,7 +17,7 @@ import java.util.Set;
 @RequestMapping("/employee")
 public class EmployeeRestApi {
     IService service;
-
+    private final MailService mailService;
     @GetMapping("/find-all")
     public List<Employee> getAllEmployees() {
         return service.getAllEmployees();
@@ -47,6 +48,23 @@ public class EmployeeRestApi {
         return service.getEmployeesOfShift(shiftId);
     }
 
+    @PostMapping("/send")
+    public String sendMail(@RequestParam String to,@RequestParam String subject,@RequestParam String message) {
+        mailService.sendSimpleMail(to, subject, message);
+        return "Mail sent to " + to;
+    }
+
+    @GetMapping("/reset-week")
+    public String testResetWeek() {
+        service.resetWeekAndNotifyManager();
+        return "resetWeekAndNotifyManager triggered";
+    }
+
+    @GetMapping("/send-weekly")
+    public String testSendWeeklyShifts() {
+        service.sendWeeklyShiftsToEmployees();
+        return "sendWeeklyShiftsToEmployees triggered";
+    }
 
 }
 

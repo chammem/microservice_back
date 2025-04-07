@@ -23,9 +23,10 @@ public interface IService {
 
     Set<Employee> getEmployeesOfShift(Long shiftId);
 
-
+    public void resetWeekAndNotifyManager();
+    public void sendWeeklyShiftsToEmployees();
     public Shift assignEmployeeToSHift(Long shiftId, Long employeeId);
-
+    void sendEmail(String to, String subject, String body);
 
 
 

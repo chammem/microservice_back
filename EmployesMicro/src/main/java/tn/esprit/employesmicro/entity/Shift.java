@@ -23,6 +23,9 @@ public class Shift {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    private boolean archived = false;
+
+
     LocalDate date;
 
     LocalTime startTime;
