@@ -51,4 +51,20 @@ public class CartService {
                 .mapToDouble(item -> item.getPrice() * item.getQuantity())
                 .sum();
     }
+
+    public int getItemCount(String userId) {
+        Cart cart = getCartByUserId(userId);
+        return cart.getItems().size();
+    }
+
+    public double applyDiscount(String userId, String discountCode) {
+        Cart cart = getCartByUserId(userId);
+        double total = calculateTotal(userId);
+        // Simple discount logic (e.g., "SAVE10" = 10% off)
+        if ("SAVE10".equals(discountCode)) {
+            return total * 0.9;
+        } else {
+            return total;
+        }
+    }
 }
