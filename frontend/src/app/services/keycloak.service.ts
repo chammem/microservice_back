@@ -15,7 +15,7 @@ export class KeycloakService {
     // Initialisation garantie
     const Keycloak = _Keycloak as unknown as KeycloakType;
     this.keycloak = new Keycloak({
-      url: 'http://localhost:8080',
+      url: 'http://keycloak:8080',
       realm: 'JobBoardKeycloack',
       clientId: 'angular-client',
       enableLogging: true,
@@ -85,7 +85,7 @@ export class KeycloakService {
   
   async logout(): Promise<void> {
     await this.keycloak.logout({
-      redirectUri: 'http://localhost:4200' // URL de redirection après logout
+      redirectUri: 'http://localhost:8100' // URL de redirection après logout
     });
   }
 
