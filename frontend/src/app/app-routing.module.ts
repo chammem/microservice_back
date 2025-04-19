@@ -2,11 +2,13 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AdminComponent } from './theme/layout/admin/admin.component';
 import { HomeComponent } from './home/home.component';
-import AuthSigninComponent from './demo/pages/authentication/auth-signin/auth-signin.component';
+import { AuthSigninComponent } from './demo/pages/authentication/auth-signin/auth-signin.component';  // Chemin relatif correct
 import AuthSignupComponent from './demo/pages/authentication/auth-signup/auth-signup.component';
 import { PanierComponent } from './panier/panier.component';
 import { CommandeComponent } from './commande/commande.component';
 import { ConfirmationComponent } from './confirmation/confirmation.component';
+import { authGuard } from './core/guards/auth.guard';  // Importer le guard
+import { PaymentComponent } from './payment/payment.component';
 
 const routes: Routes = [
   {
@@ -15,9 +17,10 @@ const routes: Routes = [
   ,
   { path: 'auth/signin', component: AuthSigninComponent },
   { path: 'auth/signup', component: AuthSignupComponent },
-  { path: 'panier', component: PanierComponent },
-  { path: 'commande', component: CommandeComponent },
-  { path: 'confirmation/:orderId', component: ConfirmationComponent },
+  { path: 'panier', component: PanierComponent , canActivate: [authGuard]},
+  { path: 'commande', component: CommandeComponent , canActivate: [authGuard]},
+  { path: 'confirmation/:orderId', component: ConfirmationComponent , canActivate: [authGuard]},
+  { path: 'paiement/:orderId', component: PaymentComponent },
 
   {
     path: 'admin',

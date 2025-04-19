@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { provideKeycloak } from 'keycloak-angular';
-import { KeycloakService } from 'keycloak-angular';
 import { inject, Injectable } from '@angular/core';
-import Keycloak from 'keycloak-js';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-auth-signin',
@@ -12,22 +10,22 @@ import Keycloak from 'keycloak-js';
   templateUrl: './auth-signin.component.html',
   styleUrls: ['./auth-signin.component.scss']
 })
-export default class AuthSigninComponent {
-  private keycloak = inject(KeycloakService);
+export class AuthSigninComponent {
+  username = 'sinda';
+  password = '123456';
 
-  async login() {
-    return this.keycloak.login();
-  }
+  constructor(private auth: AuthService) {}
 
-  async logout() {
-    return this.keycloak.logout();
-  }
-
-  async getToken() {
-    return this.keycloak.getToken();
-  }
-
-  async isLoggedIn() {
-    return this.keycloak.isLoggedIn();
+  login() {
+    this.auth.login(this.username, this.password).subscribe(
+      (res: any) => {
+        localStorage.setItem('token', res.access_token);
+        console.log('Login successful', res);
+      },
+      err => {
+        console.error('Login failed', err);
+        alert(`Login failed: ${err.error.error_description}`);
+      }
+    );
   }
 }

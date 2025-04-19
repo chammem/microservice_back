@@ -1,5 +1,6 @@
 package tn.esprit.microservice.commande.Config;
 
+import org.springframework.security.config.Customizer;
 import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -26,6 +27,7 @@ import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.session.SessionRegistryImpl;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
@@ -56,6 +58,7 @@ public class KeycloakSecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/commandes/create-checkout-session").permitAll()
                         .requestMatchers("/commandes").hasRole("user") // Modifié ici
                         .requestMatchers("/commandes/user").hasRole("user")
                         .requestMatchers("/commandes/useradd").permitAll()
@@ -65,9 +68,17 @@ public class KeycloakSecurityConfig {
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt
                                 .jwtAuthenticationConverter(jwtAuthenticationConverter())
+                                .decoder(jwtDecoder()) // Now this will work
                         )
                 );
         return http.build();
+    }
+
+    @Bean
+    public JwtDecoder jwtDecoder() {
+        return NimbusJwtDecoder.withJwkSetUri(
+                "http://localhost:8080/realms/JobBoardKeycloack/protocol/openid-connect/certs"
+        ).build();
     }
 
     @Bean

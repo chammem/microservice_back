@@ -1,11 +1,12 @@
+/* To learn more about this file see: https://angular.io/config/tsconfig. */
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "moduleResolution": "node",  // ou "nodenext"
-    "module": "ES2022",
-    "target": "ES2022",
+    "skipLibCheck": false,
     "esModuleInterop": true,
     "baseUrl": "./",
+    "types": [],
+    "typeRoots": ["node_modules/keycloak-js/lib", "node_modules/@types"],
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
@@ -18,13 +19,15 @@
     "declaration": false,
     "downlevelIteration": true,
     "experimentalDecorators": true,
+    "moduleResolution": "node",
     "importHelpers": true,
     "useDefineForClassFields": false,
+    "target": "ES2022", // this will auto target to latest by angular cli
+    "module": "ES2022",
     "lib": [
-      "ES2022",  // This will target the latest by Angular CLI
+      "ES2022", // this will auto target to latest by angular cli
       "dom"
-    ],
-    "types": ["keycloak-js"]
+    ]
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
@@ -33,4 +36,3 @@
     "strictTemplates": true
   }
 }
-

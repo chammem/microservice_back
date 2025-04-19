@@ -35,10 +35,21 @@
               <a href="#" class="search-switch" aria-label="Search"><i class="fa fa-search"></i></a>
               <a href="#" aria-label="Favorites"><i class="fa fa-heart"></i></a>
               <a routerLink="/panier"aria-label="Cart"><i class="fa fa-shopping-cart"></i> <span>0</span></a>
-              <a routerLink="/auth/signin" aria-label="Sign in">
-                <i class="fa fa-user"></i>
-              </a>
-                          </div>
+               
+               <!-- Affiche soit le login soit le logout selon l'état -->
+ <!-- Bouton Déconnexion conditionnel -->
+ <ng-container *ngIf="authService.isAuthenticated(); else loginButton">
+  <a (click)="handleAuthAction()" class="logout-btn" aria-label="Déconnexion">
+    <i class="fa fa-sign-out"></i> Déconnexion
+  </a>
+</ng-container>
+
+<ng-template #loginButton>
+  <a (click)="handleAuthAction()" aria-label="Connexion">
+    <i class="fa fa-user"></i> Connexion
+  </a>
+</ng-template>
+            </div>
           </div>
         </div>
       </div>
