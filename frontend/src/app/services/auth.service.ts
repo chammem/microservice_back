@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class AuthService {
-    private keycloakTokenUrl = 'http://localhost:8080/realms/JobBoardKeycloack/protocol/openid-connect/token';  // URL pour obtenir le token
+    private keycloakTokenUrl = 'http://keycloak:8080/realms/JobBoardKeycloack/protocol/openid-connect/token';  // URL pour obtenir le token
     private clientId = 'angular-client';  // ID de ton client Keycloak
     private grantType = 'password';  // Type de grant (ici, "password")
   
@@ -28,7 +28,7 @@ export class AuthService {
   // Tu peux stocker le token dans localStorage par exemple
 
   
-  private keycloakUserInfoUrl = 'http://localhost:8080/realms/JobBoardKeycloack/protocol/openid-connect/userinfo';  // URL de l'endpoint UserInfo de Keycloak
+  private keycloakUserInfoUrl = 'http://keycloak:8080/realms/JobBoardKeycloack/protocol/openid-connect/userinfo';  // URL de l'endpoint UserInfo de Keycloak
 
 
   getUserInfo(token: string): Observable<any> {

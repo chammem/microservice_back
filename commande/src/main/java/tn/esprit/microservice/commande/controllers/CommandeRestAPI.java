@@ -160,8 +160,8 @@ public class CommandeRestAPI {
         // Créer la session de paiement avec Stripe
         String checkoutUrl = stripeService.createCheckoutSession(
                 (long) (total * 100), "eur",
-                "http://localhost:4200/confirmation/" + orderId,
-                "http://localhost:4200/cancel"
+                "http://localhost:8100/confirmation/" + orderId,
+                "http://localhost:8100/cancel"
         );
         ResponseEntity<Commande> commandeResponse = commandeService.getCommandeById(orderId);
 
