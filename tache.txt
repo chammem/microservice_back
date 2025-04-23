@@ -1,4 +1,0 @@
-aziz : gestion panier 
-sinda : gestion des commande 
-nawress : gestion des restaurant 
-ala : 

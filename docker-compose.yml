@@ -1,0 +1,82 @@
+version: '3.8'
+
+services:
+  config-server:
+    build: ./config-server
+    container_name: config-server
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./config-server/src/main/resources/configurations:/configurations  # Montage des configs
+    networks:
+      - microservices-network
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8888/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  discovery-service:
+    build: ./discovery-service
+    container_name: discovery-service
+    ports:
+      - "8761:8761"
+    networks:
+      - microservices-network
+    depends_on:
+      config-server:
+        condition: service_healthy
+    environment:
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:8888
+
+
+
+  cart-service:
+    build: ./cart
+    container_name: cart-service
+    ports:
+      - "8080:8080"
+    depends_on:
+      - discovery-service
+      - config-server
+    networks:
+      - microservices-network
+
+    environment:
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:8888
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    ports:
+      - "8222:8222"  # Port exposé à l'hôte
+    networks:
+      - microservices-network
+    depends_on:
+      - discovery-service
+    environment:
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:8888
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8222/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+
+  mysql-service:
+    image: mysql:8.0
+    container_name: mysql-service
+    environment:
+      MYSQL_ROOT_PASSWORD: yourpassword
+      MYSQL_DATABASE: ProfileService
+    ports:
+      - "3306:3306"
+    networks:
+      - microservices-network
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+networks:
+  microservices-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
