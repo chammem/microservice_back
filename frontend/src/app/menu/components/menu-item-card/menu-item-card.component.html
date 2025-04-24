@@ -1,0 +1,26 @@
+<div class="menu-card" [class.unavailable]="!menuItem.isAvailable">
+  <div class="menu-card-header">
+    <h3 class="card-title">{{ menuItem.name }}</h3>
+    <span class="price">${{ menuItem.price.toFixed(2) }}</span>
+  </div>
+  
+  <p class="description">{{ menuItem.description }}</p>
+  
+  <div class="tags">
+    @if (menuItem.isVegetarian) {
+      <span class="tag vegetarian">Vegetarian</span>
+    }
+    @if (!menuItem.isAvailable) {
+      <span class="tag unavailable">Unavailable</span>
+    }
+  </div>
+  
+  @if (menuItem.allergens && menuItem.allergens.length > 0) {
+    <div class="allergens">
+      <small>Allergens: {{ menuItem.allergens.join(', ') }}</small>
+    </div>
+  }
+  
+  <div class="card-actions">
+    <a [routerLink]="['/menu', menuItem.id]" class="view-btn">View</a>
+</div>

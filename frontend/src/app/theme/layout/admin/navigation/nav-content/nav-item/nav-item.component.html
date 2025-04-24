@@ -1,0 +1,40 @@
+<li [ngClass]="item().classes" [routerLinkActive]="['active']">
+    <ng-container *ngIf="item().url && !item().external">
+      <a class="nav-link"
+         [target]="item().target ? '_blank' : '_self'"
+         [routerLink]="[item().url || '']"
+         (click)="closeOtherMenu($event)">
+        <ng-container *ngIf="item().icon">
+          <span class="pcoded-micon">
+            <i class="feather" [ngClass]="item().icon"></i>
+          </span>
+        </ng-container>
+        <span class="pcoded-mtext">{{ item().title }}</span>
+      </a>
+    </ng-container>
+  
+    <ng-container *ngIf="item().url && item().external">
+      <li [ngClass]="item().classes">
+        <a [target]="item().target ? '_blank' : '_self'" [href]="item().url || '#'">
+          <ng-container *ngIf="item().icon">
+            <span class="pcoded-micon">
+              <i class="feather" [ngClass]="item().icon"></i>
+            </span>
+          </ng-container>
+          <span class="pcoded-mtext">{{ item().title }}</span>
+        </a>
+      </li>
+    </ng-container>
+  
+    <ng-container *ngIf="!item().url">
+      <a class="nav-link" href="javascript:">
+        <ng-container *ngIf="item().icon">
+          <span class="pcoded-micon">
+            <i class="feather" [ngClass]="item().icon"></i>
+          </span>
+        </ng-container>
+        <span class="pcoded-mtext">{{ item().title }}</span>
+      </a>
+    </ng-container>
+  </li>
+  

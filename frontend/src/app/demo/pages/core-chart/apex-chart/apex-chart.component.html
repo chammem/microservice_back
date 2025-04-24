@@ -1,0 +1,14 @@
+<div class="row">
+  <div class="col-md-6">
+    <app-card cardTitle="Donut Chart" [options]="false">
+      <apx-chart
+        [series]="donutChartOptions.series"
+        [chart]="donutChartOptions.chart"
+        [labels]="donutChartOptions.labels"
+        [colors]="donutChartOptions.colors"
+        [responsive]="donutChartOptions.responsive"
+        [legend]="donutChartOptions.legend">
+      </apx-chart>
+    </app-card>
+  </div>
+</div>

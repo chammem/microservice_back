@@ -1,0 +1,239 @@
+// Variables (cohérentes avec commande.scss)
+$primary-color: #ff6600;
+$background-light: #f9f3ec;
+$text-color: #333;
+$white: #ffffff;
+$border-color: #ddd;
+$error-color: red;
+
+.menu-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+
+  .menu-header {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 30px;
+
+    h2 {
+      font-size: 2rem;
+      color: $primary-color;
+      margin: 0;
+    }
+
+    .filter-controls {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+
+      .category-select {
+        padding: 10px 15px;
+        border: 1px solid $border-color;
+        border-radius: 5px;
+        background: $white;
+        font-size: 1rem;
+      }
+
+      .search-box {
+        position: relative;
+        flex-grow: 1;
+
+        input {
+          width: 100%;
+          padding: 10px 15px 10px 35px;
+          border: 1px solid $border-color;
+          border-radius: 5px;
+          font-size: 1rem;
+        }
+
+        .search-icon {
+          position: absolute;
+          left: 10px;
+          top: 50%;
+          transform: translateY(-50%);
+          pointer-events: none;
+        }
+      }
+    }
+  }
+
+  .menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+  }
+
+  .menu-card {
+    background: $white;
+    border: 1px solid $border-color;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .menu-image {
+      position: relative;
+      height: 180px;
+      overflow: hidden;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+      }
+
+      .menu-category {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: rgba($primary-color, 0.9);
+        color: $white;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: bold;
+      }
+    }
+
+    .menu-content {
+      padding: 15px;
+
+      h3 {
+        margin: 0 0 10px;
+        font-size: 1.2rem;
+        color: darken($text-color, 10%);
+      }
+
+      .menu-description {
+        color: lighten($text-color, 20%);
+        font-size: 0.9rem;
+        margin-bottom: 15px;
+        line-height: 1.4;
+      }
+
+      .menu-ingredients {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        margin-bottom: 15px;
+
+        .ingredient-tag {
+          background: lighten($primary-color, 35%);
+          color: darken($primary-color, 10%);
+          padding: 3px 8px;
+          border-radius: 10px;
+          font-size: 0.8rem;
+        }
+      }
+
+      .menu-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 15px;
+
+        .menu-price {
+          font-weight: bold;
+          color: $primary-color;
+          font-size: 1.1rem;
+        }
+
+        .quantity-controls {
+          display: flex;
+          align-items: center;
+          gap: 5px;
+
+          button {
+            width: 25px;
+            height: 25px;
+            background: $primary-color;
+            color: $white;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s ease;
+
+            &:hover {
+              background: darken($primary-color, 10%);
+            }
+          }
+        }
+
+        .add-to-cart-btn {
+          background: $primary-color;
+          color: $white;
+          border: none;
+          padding: 8px 15px;
+          border-radius: 5px;
+          cursor: pointer;
+          transition: background 0.2s ease;
+          font-size: 0.9rem;
+
+          &:hover {
+            background: darken($primary-color, 10%);
+          }
+
+          &:disabled {
+            background: lighten($text-color, 40%);
+            cursor: not-allowed;
+          }
+        }
+      }
+    }
+  }
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 30px;
+
+    button {
+      background: $primary-color;
+      color: $white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+
+      &:hover:not(:disabled) {
+        background: darken($primary-color, 10%);
+      }
+
+      &:disabled {
+        background: lighten($text-color, 40%);
+        cursor: not-allowed;
+      }
+    }
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .menu-container {
+    padding: 15px;
+
+    .menu-header {
+      .filter-controls {
+        flex-direction: column;
+        gap: 10px;
+      }
+    }
+
+    .menu-grid {
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 15px;
+    }
+  }
+}

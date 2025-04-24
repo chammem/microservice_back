@@ -1,0 +1,31 @@
+<div class="detail-container">
+    <div class="detail-header">
+      <h2>Menu Item Details</h2>
+      <a [routerLink]="['/menu']" class="back-btn">Back to Menu</a>
+    </div>
+    
+    <!-- Loading condition -->
+    <div *ngIf="loading" class="loading">
+      <p>Loading item details...</p>
+    </div>
+    
+    <!-- Error or No Menu Item condition -->
+    <div *ngIf="error || !menuItem" class="error">
+      <p>Item not found or an error occurred.</p>
+      <a [routerLink]="['/menu']">Return to menu</a>
+    </div>
+    
+    <!-- Menu Item Detail -->
+    <div *ngIf="menuItem && !loading && !error" class="menu-detail-card">
+      <div class="card-header">
+        <h1>{{ menuItem.name }}</h1>
+        <div class="price-tag">${{ menuItem.price.toFixed(2) }}</div>
+      </div>
+      
+      <div class="status-badges">
+        <span *ngIf="menuItem.isVegetarian" class="badge vegetarian">Vegetarian</span>
+        <!-- You can add other badges like 'Gluten Free' or any other statuses -->
+      </div>
+    </div>
+  </div>
+  

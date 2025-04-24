@@ -1,0 +1,7 @@
+<div class="menu-list">
+  <div *ngFor="let menu of filteredMenus" class="menu-item">
+    <h3>{{ menu.name }}</h3>
+    <p>{{ menu.description }}</p>
+    <span class="price">{{ menu.price | currency:'EUR' }}</span>
+  </div>
+</div>
