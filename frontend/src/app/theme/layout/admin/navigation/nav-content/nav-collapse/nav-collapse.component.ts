@@ -11,6 +11,7 @@ import { NavItemComponent } from '../nav-item/nav-item.component';
 
 @Component({
   selector: 'app-nav-collapse',
+  standalone: true,
   imports: [SharedModule, NavItemComponent, RouterModule, CommonModule],
   templateUrl: './nav-collapse.component.html',
   styleUrls: ['./nav-collapse.component.scss'],
@@ -26,7 +27,7 @@ import { NavItemComponent } from '../nav-item/nav-item.component';
 })
 export class NavCollapseComponent {
   // public props
-  item = input<NavigationItem>();
+  item = input.required<NavigationItem>();
   visible = false;
 
   // public method
@@ -34,32 +35,42 @@ export class NavCollapseComponent {
     this.visible = !this.visible;
     let parent = e.target as HTMLElement;
 
+    // Gestion sécurisée de la hiérarchie parentale
     if (parent?.tagName === 'SPAN') {
-      parent = parent.parentElement!;
+      parent = parent.parentElement ?? parent;
     }
 
-    parent = (parent as HTMLElement).parentElement as HTMLElement;
+    const parentElement = parent.parentElement;
+    if (!parentElement) return;
 
+    // Fermer les autres menus ouverts
     const sections = document.querySelectorAll('.pcoded-hasmenu');
-    for (let i = 0; i < sections.length; i++) {
-      if (sections[i] !== parent) {
-        sections[i].classList.remove('pcoded-trigger');
+    sections.forEach(section => {
+      if (section !== parentElement) {
+        section.classList.remove('pcoded-trigger');
       }
+    });
+
+    // Navigation sécurisée dans la hiérarchie
+    let currentParent: HTMLElement | null = parentElement.parentElement;
+    let preParent: HTMLElement | null = currentParent?.parentElement?.parentElement ?? null;
+
+    // Activer les parents avec pcoded-hasmenu
+    while (currentParent?.classList.contains('pcoded-hasmenu')) {
+      currentParent.classList.add('pcoded-trigger');
+      currentParent = currentParent.parentElement?.parentElement ?? null;
     }
 
-    let first_parent = parent.parentElement;
-    let pre_parent = ((parent as HTMLElement).parentElement as HTMLElement).parentElement as HTMLElement;
-    if (first_parent.classList.contains('pcoded-hasmenu')) {
-      do {
-        first_parent.classList.add('pcoded-trigger');
-        first_parent = ((first_parent as HTMLElement).parentElement as HTMLElement).parentElement as HTMLElement;
-      } while (first_parent.classList.contains('pcoded-hasmenu'));
-    } else if (pre_parent.classList.contains('pcoded-submenu')) {
-      do {
-        pre_parent.parentElement.classList.add('pcoded-trigger');
-        pre_parent = (((pre_parent as HTMLElement).parentElement as HTMLElement).parentElement as HTMLElement).parentElement as HTMLElement;
-      } while (pre_parent.classList.contains('pcoded-submenu'));
+    // Activer les parents avec pcoded-submenu
+    while (preParent?.classList.contains('pcoded-submenu')) {
+      const parentToActivate = preParent.parentElement;
+      if (parentToActivate) {
+        parentToActivate.classList.add('pcoded-trigger');
+      }
+      preParent = preParent.parentElement?.parentElement?.parentElement ?? null;
     }
-    parent.classList.toggle('pcoded-trigger');
+
+    // Basculer l'état du menu actuel
+    parentElement.classList.toggle('pcoded-trigger');
   }
 }

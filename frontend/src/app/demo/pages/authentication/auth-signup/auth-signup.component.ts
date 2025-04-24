@@ -8,4 +8,4 @@ import { RouterModule } from '@angular/router';
   templateUrl: './auth-signup.component.html',
   styleUrls: ['./auth-signup.component.scss']
 })
-export default class AuthSignupComponent {}
+export class AuthSignupComponent {}

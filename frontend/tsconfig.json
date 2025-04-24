@@ -1,17 +1,22 @@
-/* To learn more about this file see: https://angular.io/config/tsconfig. */
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "skipLibCheck": false,
-    "esModuleInterop": true,
     "baseUrl": "./",
-    "types": [],
-    "typeRoots": ["node_modules/keycloak-js/lib", "node_modules/@types"],
-    "outDir": "./dist/out-tsc",
+    "paths": {
+      "@app/*": ["src/app/*"],
+      "@models/*": ["src/app/models/*"],
+      "@services/*": ["src/app/services/*"],
+      "@components/*": ["src/app/components/*"]
+    },
+    "target": "ES2022",
+    "module": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "moduleResolution": "node",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
     "noImplicitOverride": true,
-    "allowSyntheticDefaultImports": true,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
@@ -19,20 +24,33 @@
     "declaration": false,
     "downlevelIteration": true,
     "experimentalDecorators": true,
-    "moduleResolution": "node",
-    "importHelpers": true,
+    "emitDecoratorMetadata": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
     "useDefineForClassFields": false,
-    "target": "ES2022", // this will auto target to latest by angular cli
-    "module": "ES2022",
-    "lib": [
-      "ES2022", // this will auto target to latest by angular cli
-      "dom"
-    ]
+    "importHelpers": true,
+    "typeRoots": ["node_modules/@types"],
+    "types": [],
+    "outDir": "./dist/out-tsc",
+    "inlineSources": true,
+    "inlineSourceMap": false
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
-    "strictTemplates": true
-  }
+    "strictTemplates": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "fullTemplateTypeCheck": true,
+    "strictOutputEventTypes": true
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.spec.ts",
+    "**/*.test.ts",
+    "**/*.mock.ts"
+  ]
 }

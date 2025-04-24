@@ -10,6 +10,7 @@ import { NavCollapseComponent } from '../nav-collapse/nav-collapse.component';
 
 @Component({
   selector: 'app-nav-group',
+  standalone: true,
   imports: [SharedModule, NavItemComponent, NavCollapseComponent],
   templateUrl: './nav-group.component.html',
   styleUrls: ['./nav-group.component.scss']
@@ -18,41 +19,53 @@ export class NavGroupComponent implements OnInit {
   private location = inject(Location);
 
   // public props
-  readonly item = input<NavigationItem>(undefined);
+  readonly item = input.required<NavigationItem>();
 
   // life cycle event
   ngOnInit() {
-    // at reload time active and trigger link
     let current_url = this.location.path();
-    if (this.location['_baseHref']) {
-      current_url = this.location['_baseHref'] + this.location.path();
+    const baseHref = this.getBaseHref();
+    
+    if (baseHref) {
+      current_url = baseHref + current_url;
     }
-    const link = "a.nav-link[ href='" + current_url + "' ]";
+    
+    const link = `a.nav-link[ href='${current_url}' ]`;
     const ele = document.querySelector(link);
-    if (ele !== null && ele !== undefined) {
-      const parent = ele.parentElement;
-      const up_parent = parent.parentElement.parentElement;
-      const pre_parent = up_parent.parentElement;
-      const last_parent = up_parent.parentElement.parentElement.parentElement.parentElement;
-      if (parent.classList.contains('pcoded-hasmenu')) {
-        parent.classList.add('pcoded-trigger');
-        parent.classList.add('active');
-      } else if (up_parent.classList.contains('pcoded-hasmenu')) {
-        up_parent.classList.add('pcoded-trigger');
-        up_parent.classList.add('active');
-      } else if (pre_parent.classList.contains('pcoded-hasmenu')) {
-        pre_parent.classList.add('pcoded-trigger');
-        pre_parent.classList.add('active');
-      }
+    
+    if (ele) {
+      this.activateMenuItems(ele);
+    }
+  }
 
-      if (last_parent.classList.contains('pcoded-hasmenu')) {
-        last_parent.classList.add('pcoded-trigger');
+  private getBaseHref(): string {
+    return document.baseURI.replace(window.location.origin, '');
+  }
 
-        if (pre_parent.classList.contains('pcoded-hasmenu')) {
-          pre_parent.classList.add('pcoded-trigger');
-        }
-        last_parent.classList.add('active');
+  private activateMenuItems(element: Element): void {
+    const parent = element.parentElement;
+    if (!parent) return;
+
+    const up_parent = parent.parentElement?.parentElement ?? null;
+    const pre_parent = up_parent?.parentElement ?? null;
+    const last_parent = up_parent?.parentElement?.parentElement?.parentElement ?? null;
+
+    // Fonction helper avec type plus permissif
+    const activateElement = (el: HTMLElement | null | undefined) => {
+      if (el?.classList.contains('pcoded-hasmenu')) {
+        el.classList.add('pcoded-trigger');
+        el.classList.add('active');
       }
+    };
+
+    activateElement(parent);
+    activateElement(up_parent);
+    activateElement(pre_parent);
+
+    if (last_parent?.classList.contains('pcoded-hasmenu')) {
+      last_parent.classList.add('pcoded-trigger');
+      activateElement(pre_parent);
+      last_parent.classList.add('active');
     }
   }
 }

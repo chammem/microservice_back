@@ -8,6 +8,7 @@ import { NavContentComponent } from './nav-content/nav-content.component';
 
 @Component({
   selector: 'app-navigation',
+  standalone: true,
   imports: [SharedModule, NavLogoComponent, NavContentComponent],
   templateUrl: './navigation.component.html',
   styleUrls: ['./navigation.component.scss']
@@ -16,8 +17,8 @@ export class NavigationComponent {
   // public props
   NavCollapse = output();
   NavCollapsedMob = output();
-  navCollapsed: boolean;
-  navCollapsedMob: boolean;
+  navCollapsed: boolean = false; // Initialisation ajoutée ici
+  navCollapsedMob: boolean = false;
   windowWidth: number;
 
   // constructor

@@ -1,17 +1,14 @@
-// angular import
-import { Component, Input, OnInit, input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { animate, AUTO_STYLE, state, style, transition, trigger } from '@angular/animations';
-
-// bootstrap import
-import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { CommonModule } from '@angular/common';
+import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-card',
   standalone: true,
   imports: [CommonModule, NgbDropdownModule],
   templateUrl: './card.component.html',
-  styleUrl: './card.component.scss',
+  styleUrls: ['./card.component.scss'],
   animations: [
     trigger('collapsedCard', [
       state(
@@ -49,45 +46,37 @@ import { CommonModule } from '@angular/common';
   ]
 })
 export class CardComponent implements OnInit {
-  // public props
-  cardTitle = input<string>('Card Title');
-  @Input() cardClass: string;
-  blockClass = input<string>();
-  headerClass = input<string>();
-  options = input<boolean>(true);
-  hidHeader = input<boolean>(false);
-  customHeader = input<boolean>(false);
+  // Input properties
+  @Input() cardTitle: string = 'Card Title';
+  @Input() cardClass: string = '';
+  @Input() blockClass: string = '';
+  @Input() headerClass: string = '';
+  @Input() options: boolean = true;
+  @Input() hidHeader: boolean = false;
+  @Input() customHeader: boolean = false;
 
-  animation: string;
-  fullIcon: string;
-  isAnimating: boolean;
-  collapsedCard: string;
-  collapsedIcon: string;
-  loadCard: boolean;
-  cardRemove: string;
+  // Component state
+  animation: string = '';
+  fullIcon: string = 'icon-maximize';
+  isAnimating: boolean = false;
+  collapsedCard: string = 'expanded';
+  collapsedIcon: string = 'icon-minus';
+  loadCard: boolean = false;
+  cardRemove: string = 'open';
 
-  // constructor
-  constructor() {
-    this.fullIcon = 'icon-maximize';
-    this.isAnimating = false;
-    this.collapsedCard = 'expanded';
-    this.collapsedIcon = 'icon-minus';
-    this.loadCard = false;
-    this.cardRemove = 'open';
-  }
+  constructor() {}
 
-  // life cycle event
-  ngOnInit() {
+  ngOnInit(): void {
     if (!this.options || this.hidHeader || this.customHeader) {
-      this.collapsedCard = 'false';
+      this.collapsedCard = 'collapsed';
     }
   }
 
-  // public method
-  fullCardToggle(element: HTMLElement, animation: string, status: boolean) {
+  fullCardToggle(element: HTMLElement, animation: string, status: boolean): void {
     animation = this.cardClass === 'full-card' ? 'zoomOut' : 'zoomIn';
     this.fullIcon = this.cardClass === 'full-card' ? 'icon-maximize' : 'icon-minimize';
     this.cardClass = this.cardClass === 'full-card' ? this.cardClass : 'full-card';
+    
     if (status) {
       this.animation = animation;
     }
@@ -95,20 +84,23 @@ export class CardComponent implements OnInit {
 
     setTimeout(() => {
       this.cardClass = animation === 'zoomOut' ? '' : this.cardClass;
-      if (this.cardClass === 'full-card') {
-        document.querySelector('body').style.overflow = 'hidden';
-      } else {
-        document.querySelector('body').removeAttribute('style');
+      const body = document.querySelector('body');
+      if (body) {
+        if (this.cardClass === 'full-card') {
+          body.style.overflow = 'hidden';
+        } else {
+          body.removeAttribute('style');
+        }
       }
     }, 500);
   }
 
-  collapsedCardToggle() {
+  collapsedCardToggle(): void {
     this.collapsedCard = this.collapsedCard === 'collapsed' ? 'expanded' : 'collapsed';
     this.collapsedIcon = this.collapsedCard === 'collapsed' ? 'icon-plus' : 'icon-minus';
   }
 
-  cardRefresh() {
+  cardRefresh(): void {
     this.loadCard = true;
     this.cardClass = 'card-load';
     setTimeout(() => {
@@ -117,7 +109,7 @@ export class CardComponent implements OnInit {
     }, 3000);
   }
 
-  cardRemoveAction() {
+  cardRemoveAction(): void {
     this.cardRemove = this.cardRemove === 'closed' ? 'open' : 'closed';
   }
 }

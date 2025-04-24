@@ -1,0 +1,19 @@
+<form [formGroup]="menuForm" (ngSubmit)="onSubmit()" class="menu-form">
+    <div class="form-group">
+      <label for="name">Name *</label>
+      <input 
+        type="text" 
+        id="name" 
+        formControlName="name" 
+        [class.invalid]="menuForm.get('name')?.invalid && (menuForm.get('name')?.touched || formSubmitted)">
+  
+      <!-- Condition d'affichage des erreurs -->
+      <div *ngIf="menuForm.get('name')?.invalid && (menuForm.get('name')?.touched || formSubmitted)" class="error-message">
+        <span *ngIf="menuForm.get('name')?.errors?.['required']">Name is required</span>
+        <span *ngIf="menuForm.get('name')?.errors?.['minlength']">Name must be at least {{ menuForm.get('name')?.errors?.['minlength'].requiredLength }} characters</span>
+      </div>
+    </div>
+  
+    <!-- Autres champs du formulaire -->
+  </form>
+  

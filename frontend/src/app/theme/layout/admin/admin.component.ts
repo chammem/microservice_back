@@ -11,25 +11,29 @@ import { BreadcrumbsComponent } from '../../shared/components/breadcrumbs/breadc
 
 @Component({
   selector: 'app-admin',
-  imports: [NavBarComponent, NavigationComponent, RouterModule, CommonModule, ConfigurationComponent, BreadcrumbsComponent],
+  standalone: true,
+  imports: [
+    NavBarComponent,
+    NavigationComponent,
+    RouterModule,
+    CommonModule,
+    ConfigurationComponent,
+    BreadcrumbsComponent
+  ],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.scss']
 })
 export class AdminComponent {
   // public props
-  navCollapsed;
-  navCollapsedMob: boolean;
-  windowWidth: number;
-
-  // constructor
-  constructor() {
-    this.windowWidth = window.innerWidth;
-    this.navCollapsedMob = false;
-  }
+  navCollapsed: boolean = false; // Typage explicite avec initialisation
+  navCollapsedMob: boolean = false;
+  windowWidth: number = window.innerWidth;
 
   // public method
   navMobClick() {
-    if (this.navCollapsedMob && !document.querySelector('app-navigation.pcoded-navbar').classList.contains('mob-open')) {
+    const navbar = document.querySelector('app-navigation.pcoded-navbar');
+    
+    if (this.navCollapsedMob && !navbar?.classList.contains('mob-open')) {
       this.navCollapsedMob = !this.navCollapsedMob;
       setTimeout(() => {
         this.navCollapsedMob = !this.navCollapsedMob;
@@ -39,7 +43,6 @@ export class AdminComponent {
     }
   }
 
-  // this is for eslint rule
   handleKeyDown(event: KeyboardEvent): void {
     if (event.key === 'Escape') {
       this.closeMenu();
@@ -47,8 +50,9 @@ export class AdminComponent {
   }
 
   closeMenu() {
-    if (document.querySelector('app-navigation.pcoded-navbar').classList.contains('mob-open')) {
-      document.querySelector('app-navigation.pcoded-navbar').classList.remove('mob-open');
+    const navbar = document.querySelector('app-navigation.pcoded-navbar');
+    if (navbar?.classList.contains('mob-open')) {
+      navbar.classList.remove('mob-open');
     }
   }
 }
