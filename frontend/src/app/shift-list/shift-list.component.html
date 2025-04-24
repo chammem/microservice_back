@@ -1,0 +1,190 @@
+<div class="container-fluid">
+    <div class="row mb-4">
+      <div class="col">
+        <div class="card">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h5>Gestion des Horaires</h5>
+            <div>
+              <button class="btn btn-primary" (click)="loadShifts()">
+                <i class="feather icon-refresh-cw mr-1"></i> Rafraîchir
+              </button>
+            </div>
+          </div>
+          <div class="card-body">
+            <!-- Loading state -->
+            <div *ngIf="loading" class="text-center my-5">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Chargement...</span>
+              </div>
+            </div>
+  
+            <!-- Error message -->
+            <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+  
+            <!-- Calendar view -->
+            <div class="shift-calendar" *ngIf="!loading">
+              <!-- Header row with days -->
+              <div class="calendar-header">
+                <div class="shift-type-header">Horaire</div>
+                <div class="day-header" *ngFor="let day of weekDays">{{ day }}</div>
+              </div>
+  
+              <!-- Morning shifts row -->
+              <div class="calendar-row">
+                <div class="shift-type">Matin</div>
+                <div class="day-cell" *ngFor="let day of weekDays" (click)="openShiftModal(day, 'Matin')">
+                  <div class="shift-card" *ngIf="calendarShifts[day]['Matin']; else emptyMorning">
+                    <h6>{{ getShiftDisplayName(calendarShifts[day]['Matin']) }}</h6>
+                    <p class="shift-time">{{ getShiftTimeForDisplay(calendarShifts[day]['Matin']) }}</p>
+                    <p class="employee-count" (click)="openEmployeeModal(calendarShifts[day]['Matin'])">
+                      <i class="feather icon-users mr-1"></i> 
+                      {{ getEmployeeCountText(calendarShifts[day]['Matin']) }}
+                    </p>
+                  </div>
+                  <ng-template #emptyMorning>
+                    <div class="empty-shift">
+                      <i class="feather icon-plus-circle"></i>
+                      <span>Ajouter un créneau</span>
+                    </div>
+                  </ng-template>
+                </div>
+              </div>
+  
+              <!-- Evening shifts row -->
+              <div class="calendar-row">
+                <div class="shift-type">Soir</div>
+                <div class="day-cell" *ngFor="let day of weekDays" (click)="openShiftModal(day, 'Soir')">
+                  <div class="shift-card" *ngIf="calendarShifts[day]['Soir']; else emptySoir">
+                    <h6>{{ getShiftDisplayName(calendarShifts[day]['Soir']) }}</h6>
+                    <p class="shift-time">{{ getShiftTimeForDisplay(calendarShifts[day]['Soir']) }}</p>
+                    <p class="employee-count" (click)="openEmployeeModal(calendarShifts[day]['Soir'])">
+                      <i class="feather icon-users mr-1"></i>
+                      {{ getEmployeeCountText(calendarShifts[day]['Soir']) }}
+                    </p>
+                  </div>
+                  <ng-template #emptySoir>
+                    <div class="empty-shift">
+                      <i class="feather icon-plus-circle"></i>
+                      <span>Ajouter un créneau</span>
+                    </div>
+                  </ng-template>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Shift Create/Edit Modal -->
+  <div class="modal" [class.show]="showShiftModal" [style.display]="showShiftModal ? 'block' : 'none'" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ currentShift ? 'Modifier le créneau' : 'Ajouter un créneau' }}</h5>
+          <button type="button" class="btn-close" (click)="closeShiftModal()"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="shiftName" class="form-label">Nom du créneau</label>
+            <input type="text" class="form-control" id="shiftName" [(ngModel)]="newShiftName">
+          </div>
+          <div class="row mb-3">
+            <div class="col">
+              <label for="shiftDate" class="form-label">Date</label>
+              <input type="date" class="form-control" id="shiftDate" [(ngModel)]="newShiftDate">
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col">
+              <label for="startTime" class="form-label">Heure de début</label>
+              <input type="time" class="form-control" id="startTime" [(ngModel)]="startTime">
+            </div>
+            <div class="col">
+              <label for="endTime" class="form-label">Heure de fin</label>
+              <input type="time" class="form-control" id="endTime" [(ngModel)]="endTime">
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea class="form-control" id="description" rows="3" [(ngModel)]="newShiftDescription"></textarea>
+          </div>
+          <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeShiftModal()">Annuler</button>
+          <button type="button" class="btn btn-primary" (click)="saveShift()">
+            <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+            {{ currentShift ? 'Modifier' : 'Créer' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Employee Assignment Modal -->
+  <div class="modal" [class.show]="showEmployeeModal" [style.display]="showEmployeeModal ? 'block' : 'none'" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Assigner des employés - {{ currentShift?.name }}</h5>
+          <button type="button" class="btn-close" (click)="closeEmployeeModal()"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Loading state -->
+          <div *ngIf="loading" class="text-center my-3">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Chargement...</span>
+            </div>
+          </div>
+  
+          <!-- Error message -->
+          <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+  
+          <div *ngIf="!loading" class="row">
+            <!-- Assigned employees -->
+            <div class="col-md-6">
+              <h6 class="mb-3">Employés assignés</h6>
+              <div *ngIf="assignedEmployees.length === 0" class="text-center text-muted py-4">
+                <i class="feather icon-users d-block mb-2" style="font-size: 2rem;"></i>
+                Aucun employé assigné
+              </div>
+              <div class="list-group">
+                <div class="list-group-item d-flex justify-content-between align-items-center" 
+                     *ngFor="let employee of assignedEmployees">
+                  <div>
+                    <strong>{{ employee.nom || 'Sans nom' }}</strong>
+                    <div class="text-muted small">{{ employee.email }}</div>
+                  </div>
+                 
+                </div>
+              </div>
+            </div>
+            
+            <!-- Available employees -->
+            <div class="col-md-6">
+              <h6 class="mb-3">Employés disponibles</h6>
+              <div class="mb-3">
+                <select class="form-select" [(ngModel)]="selectedEmployeeId">
+                  <option value="">Sélectionner un employé</option>
+                  <option *ngFor="let employee of availableEmployees" [value]="employee.id">
+                    {{ employee.nom || 'Sans nom' }} ({{ employee.email }})
+                  </option>
+                </select>
+              </div>
+              <button class="btn btn-primary w-100" [disabled]="!selectedEmployeeId" (click)="assignEmployee()">
+                <i class="feather icon-user-plus mr-1"></i> Assigner
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeEmployeeModal()">Fermer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Modal backdrop -->
+  <div class="modal-backdrop fade show" *ngIf="showShiftModal || showEmployeeModal"></div>

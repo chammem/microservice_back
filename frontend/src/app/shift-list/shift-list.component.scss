@@ -1,0 +1,112 @@
+.shift-calendar {
+  display: grid;
+  grid-template-columns: 100px repeat(7, 1fr);
+  grid-gap: 8px;
+  margin-top: 20px;
+  
+  .calendar-header {
+    display: contents;
+    
+    .day-header, .shift-type-header {
+      background-color: #f8f9fa;
+      padding: 10px;
+      text-align: center;
+      font-weight: bold;
+      border-radius: 4px;
+    }
+  }
+  
+  .calendar-row {
+    display: contents;
+    
+    .shift-type {
+      background-color: #f8f9fa;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      border-radius: 4px;
+    }
+    
+    .day-cell {
+      border: 1px dashed #dee2e6;
+      border-radius: 4px;
+      min-height: 120px;
+      cursor: pointer;
+      transition: all 0.2s;
+      
+      &:hover {
+        background-color: #f8f9fa;
+        border-color: #adb5bd;
+      }
+    }
+  }
+  
+  .shift-card {
+    padding: 10px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    
+    h6 {
+      margin-bottom: 5px;
+      color: #007bff;
+    }
+    
+    .shift-time {
+      font-size: 0.85rem;
+      margin-bottom: 5px;
+    }
+    
+    .employee-count {
+      margin-top: auto;
+      font-size: 0.85rem;
+      color: #007bff; // Blue color to indicate it's clickable
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      
+      i {
+        margin-right: 5px;
+      }
+      
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+  
+  .empty-shift {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #adb5bd;
+    padding: 20px 10px;
+    
+    i {
+      font-size: 1.5rem;
+      margin-bottom: 5px;
+    }
+    
+    span {
+      text-align: center;
+      font-size: 0.85rem;
+    }
+    
+    &:hover {
+      color: #007bff;
+    }
+  }
+}
+
+// Modal backdrop fix for multiple modals
+.modal-backdrop {
+  z-index: 1040 !important;
+}
+
+.modal {
+  z-index: 1050 !important;
+}

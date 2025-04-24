@@ -8,8 +8,10 @@ import { PanierComponent } from './panier/panier.component';
 import { CommandeComponent } from './commande/commande.component';
 import { ConfirmationComponent } from './confirmation/confirmation.component';
 import { authGuard } from './core/guards/auth.guard';  // Importer le guard
-import { PaymentComponent } from './payment/payment.component';
-
+// import { PaymentComponent } from './payment/payment.component';
+import { EmployeeListComponent } from './employee-list/employee-list.component'; // Importer le composant de la liste des employés
+import { EmployeeFormComponent } from './employee-form/employee-form.component'; // Importer le composant de formulaire d'employé
+import { ShiftListComponent } from './shift-list/shift-list.component'; // Importer le composant de liste des shifts
 const routes: Routes = [
   {
     path: '',component: HomeComponent // Route racine pour HomeComponent
@@ -20,8 +22,22 @@ const routes: Routes = [
   { path: 'panier', component: PanierComponent , canActivate: [authGuard]},
   { path: 'commande', component: CommandeComponent , canActivate: [authGuard]},
   { path: 'confirmation/:orderId', component: ConfirmationComponent , canActivate: [authGuard]},
-  { path: 'paiement/:orderId', component: PaymentComponent },
-
+  // { path: 'paiement/:orderId', component: PaymentComponent },
+  { path: 'employee', component: EmployeeListComponent, canActivate: [authGuard] },
+  {
+    path: 'employee-form',
+    component: EmployeeFormComponent,
+    canActivate: [authGuard]  // Add this
+  },{
+    path: 'shifts',
+    component: ShiftListComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'employee-form/:id',
+    component: EmployeeFormComponent,
+    canActivate: [authGuard]  // Add this
+  },
   {
     path: 'admin',
     component: AdminComponent,

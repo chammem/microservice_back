@@ -1,0 +1,192 @@
+<div class="row">
+  <div class="col-sm-12">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5>Gestion des Employés</h5>
+        <button class="btn btn-primary btn-sm" routerLink="/employee-form">
+          <i class="feather icon-user-plus mr-1"></i>
+          Ajouter un Employé
+        </button>
+      </div>
+      <div class="card-body">
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <div class="input-group">
+              <input type="text" class="form-control" placeholder="Rechercher..." [(ngModel)]="searchTerm" (input)="applyFilter()" />
+              <button class="btn btn-outline-secondary" type="button">
+                <i class="feather icon-search"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Loading indicator -->
+        <div *ngIf="loading" class="d-flex justify-content-center my-4">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Chargement...</span>
+          </div>
+        </div>
+
+        <!-- Error message -->
+        <div *ngIf="error" class="alert alert-danger">
+          {{ error }}
+        </div>
+
+        <!-- Table -->
+        <div class="table-responsive">
+          <table class="table table-hover table-bordered">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Email</th>
+                <th>Téléphone</th>
+                <th>Poste</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let employee of displayedEmployees">
+                <td>{{ employee.id }}</td>
+                <td>{{ employee.nom || 'Non spécifié' }}</td>
+                <td>{{ employee.email }}</td>
+                <td>{{ employee.telephone || 'Non spécifié' }}</td>
+                <td>
+                  <span class="badge" [ngClass]="getPositionBadgeClass(employee.poste)">
+                    {{ employee.poste || 'Non spécifié' }}
+                  </span>
+                </td>
+                <td>
+                  <div class="d-flex">
+                    <button class="btn btn-info btn-sm mx-1" [routerLink]="['/employee-form', employee.id]">
+                      <i class="feather icon-edit"></i>
+                    </button>
+                    <button class="btn btn-danger btn-sm mx-1" (click)="deleteEmployee(employee.id)">
+                      <i class="feather icon-trash-2"></i>
+                    </button>
+                    <button
+                      class="btn btn-primary btn-sm mx-1"
+                      (click)="viewShifts(employee.id)"
+                      data-bs-toggle="modal"
+                      data-bs-target="#employeeShiftsModal"
+                    >
+                      <i class="feather icon-calendar"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr *ngIf="displayedEmployees && displayedEmployees.length === 0 && !loading">
+                <td colspan="6" class="text-center py-4">
+                  <div class="empty-state">
+                    <i class="feather icon-users empty-state-icon"></i>
+                    <h6 class="mt-3">Aucun employé trouvé</h6>
+                    <p class="text-muted">Ajoutez un employé pour commencer</p>
+                    <button class="btn btn-primary btn-sm" routerLink="/employee-form">
+                      <i class="feather icon-user-plus mr-1"></i>
+                      Ajouter un employé
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="d-flex justify-content-between align-items-center mt-3">
+          <div>
+            <select class="form-select form-select-sm" [(ngModel)]="pageSize" (change)="onPageSizeChange()">
+              <option [value]="5">5 par page</option>
+              <option [value]="10">10 par page</option>
+              <option [value]="20">20 par page</option>
+            </select>
+          </div>
+          <div>
+            <nav aria-label="Page navigation">
+              <ul class="pagination pagination-sm mb-0">
+                <li class="page-item" [class.disabled]="currentPage === 1">
+                  <a class="page-link" (click)="setPage(currentPage - 1)">
+                    <i class="feather icon-chevron-left"></i>
+                  </a>
+                </li>
+                <li class="page-item" *ngFor="let page of pages" [class.active]="currentPage === page">
+                  <a class="page-link" (click)="setPage(page)">{{ page }}</a>
+                </li>
+                <li class="page-item" [class.disabled]="currentPage === totalPages">
+                  <a class="page-link" (click)="setPage(currentPage + 1)">
+                    <i class="feather icon-chevron-right"></i>
+                  </a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Employee Shifts Modal -->
+<div class="modal fade" id="employeeShiftsModal" tabindex="-1" aria-labelledby="employeeShiftsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="employeeShiftsModalLabel">
+          Horaires de {{ selectedEmployeeName }}
+        </h5>
+        <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Loading indicator -->
+        <div *ngIf="loadingShifts" class="d-flex justify-content-center my-4">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Chargement des horaires...</span>
+          </div>
+        </div>
+        
+        <!-- Error message -->
+        <div *ngIf="error" class="alert alert-danger">
+          {{ error }}
+        </div>
+
+        <!-- Empty state -->
+        <div *ngIf="!loadingShifts && (!employeeShifts || employeeShifts.length === 0)" class="text-center py-4">
+          <i class="feather icon-calendar empty-state-icon"></i>
+          <h6 class="mt-3">Aucun horaire trouvé</h6>
+          <p class="text-muted">Cet employé n'a pas d'horaires assignés</p>
+        </div>
+
+        <!-- Shifts table -->
+        <div class="table-responsive" *ngIf="!loadingShifts && employeeShifts && employeeShifts.length > 0">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Date</th>
+                <th>Début</th>
+                <th>Fin</th>
+                <th>Durée</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let shift of employeeShifts">
+                <td>{{ shift.id }}</td>
+                <td>{{ shift.name }}</td>
+                <td>{{ shift.date | date: 'dd/MM/yyyy' }}</td>
+                <td>{{ shift.startTime | date: 'HH:mm' }}</td>
+                <td>{{ shift.endTime | date: 'HH:mm' }}</td>
+                <td>{{ getDuration(shift.startTime, shift.endTime) }}</td>
+                <td>{{ shift.description || 'N/A' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">Fermer</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,102 @@
+<div class="row">
+  <div class="col-md-8 mx-auto">
+    <div class="card">
+      <div class="card-header">
+        <h5>{{ isEditMode ? 'Modifier un employé' : 'Ajouter un nouvel employé' }}</h5>
+      </div>
+      <div class="card-body">
+        <!-- Loading indicator -->
+        <div *ngIf="loading" class="d-flex justify-content-center my-4">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Chargement...</span>
+          </div>
+        </div>
+
+        <!-- Error message -->
+        <div *ngIf="error" class="alert alert-danger">
+          {{ error }}
+        </div>
+
+        <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()" *ngIf="!loading">
+          <div class="form-group mb-3">
+            <label for="nom">Nom complet*</label>
+            <input
+              type="text"
+              id="nom"
+              class="form-control"
+              formControlName="nom"
+              [ngClass]="{ 'is-invalid': submitted && f['nom'].errors }"
+            />
+            <div *ngIf="submitted && f['nom'].errors" class="invalid-feedback">
+              <div *ngIf="f['nom'].errors['required']">Le nom est requis</div>
+              <div *ngIf="f['nom'].errors['minlength']">Le nom doit contenir au moins 2 caractères</div>
+            </div>
+          </div>
+
+          <div class="form-group mb-3">
+            <label for="poste">Poste*</label>
+            <select id="poste" class="form-control" formControlName="poste" [ngClass]="{ 'is-invalid': submitted && f['poste'].errors }">
+              <option value="">Sélectionner un poste</option>
+              <option *ngFor="let position of positions" [value]="position">{{ position }}</option>
+            </select>
+            <div *ngIf="submitted && f['poste'].errors" class="invalid-feedback">
+              <div *ngIf="f['poste'].errors['required']">Le poste est requis</div>
+            </div>
+          </div>
+
+          <div class="form-group mb-3">
+            <label for="email">Email*</label>
+            <input
+              type="email"
+              id="email"
+              class="form-control"
+              formControlName="email"
+              [ngClass]="{ 'is-invalid': submitted && f['email'].errors }"
+            />
+            <div *ngIf="submitted && f['email'].errors" class="invalid-feedback">
+              <div *ngIf="f['email'].errors['required']">L'email est requis</div>
+              <div *ngIf="f['email'].errors['email']">L'email doit être valide</div>
+            </div>
+          </div>
+
+          <div class="form-group mb-3">
+            <label for="telephone">Téléphone* (8 chiffres)</label>
+            <input
+              type="tel"
+              id="telephone"
+              class="form-control"
+              formControlName="telephone"
+              [ngClass]="{ 'is-invalid': submitted && f['telephone'].errors }"
+            />
+            <div *ngIf="submitted && f['telephone'].errors" class="invalid-feedback">
+              <div *ngIf="f['telephone'].errors['required']">Le téléphone est requis</div>
+              <div *ngIf="f['telephone'].errors['pattern']">Le téléphone doit contenir 8 chiffres</div>
+            </div>
+          </div>
+
+          <div class="form-group mb-3">
+            <label for="dateEmbauche">Date d'embauche*</label>
+            <input
+              type="date"
+              id="dateEmbauche"
+              class="form-control"
+              formControlName="dateEmbauche"
+              [ngClass]="{ 'is-invalid': submitted && f['dateEmbauche'].errors }"
+            />
+            <div *ngIf="submitted && f['dateEmbauche'].errors" class="invalid-feedback">
+              <div *ngIf="f['dateEmbauche'].errors['required']">La date d'embauche est requise</div>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-between mt-4">
+            <button type="button" class="btn btn-secondary" routerLink="/employee">Annuler</button>
+            <button type="submit" class="btn btn-primary" [disabled]="loading">
+              <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+              {{ isEditMode ? 'Mettre à jour' : 'Enregistrer' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

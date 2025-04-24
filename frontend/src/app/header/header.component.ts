@@ -13,10 +13,16 @@ export class HeaderComponent {
   constructor(public authService: KeycloakService) {}
 
   async handleAuthAction(): Promise<void> {
-    if (this.authService.isAuthenticated()) {
-      await this.authService.logout();
-    } else {
-      await this.authService.login();
+    try {
+      if (this.authService.isAuthenticated()) {
+        await this.authService.logout();
+      } else {
+        // Make sure Keycloak is initialized before login
+        await this.authService.init();
+        await this.authService.login();
+      }
+    } catch (error) {
+      console.error('[AUTH] Error in authentication action:', error);
     }
   }
 
