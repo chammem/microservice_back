@@ -1,0 +1,263 @@
+module.exports = async function startKafkaConsumer() {
+  try {
+    console.log('🔄 Tentative de connexion à Kafka...');
+    await consumer.connect();
+    console.log('✅ Connecté à Kafka');
+    
+    await consumer.subscribe({ topic: 'order-events' });
+    console.log('👂 En écoute sur le topic order-events');
+
+    await consumer.run({
+      eachMessage: async ({ message }) => {
+        console.log('📦 Message reçu:', message.value.toString());
+      }
+    });
+  } catch (err) {
+    console.error('❌ Erreur Kafka:', err);
+    throw err;
+  }
+};
+
+
+npm install @angular/material @angular/cdk --legacy-peer-deps
+
+----------------------------------------------------
+
+
+mongo-init.js
+
+
+----------------------------------
+
+
+mongo:
+    image: mongo:latest
+    container_name: mongo
+    volumes:
+      - ./data/mongodb:/data/db
+    ports:
+      - "27018:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=analytics
+    command: ["mongod", "--dbpath", "/data/db", "--bind_ip_all"]
+    user: "1000:1000" # ou adapte selon l’utilisateur de ton hôte
+    networks:
+      - backend_network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo --quiet localhost:27017/test
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  zookeeper:
+    image: bitnami/zookeeper:3.8
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    networks:
+      - backend_network
+
+  kafka:
+    image: confluentinc/cp-kafka:7.3.0
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    depends_on:
+      - zookeeper
+    depends_on:
+      - zookeeper
+    healthcheck:
+      test: ["CMD-SHELL", "kafka-topics.sh --bootstrap-server localhost:9092 --list || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    networks:
+      - backend_network
+
+
+  analytics:
+    build: ./analytics-service
+    ports:
+      - "3005:3000"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/analytics
+      - KAFKA_BROKER=kafka:9092
+    depends_on:
+      - mongo
+      - kafka
+    networks:
+      - backend_network
+
+-----------------------------------------------------------------------------------------------
+
+const express = require('express');
+const mongoose = require('mongoose');
+const { Kafka } = require('kafkajs');
+const cors = require('cors');
+const CommandeAnalytics = require('./models/CommandeAnalytics.model');
+const OrderAnalytics = require('./models/OrderAnalytics.model');
+
+// Configuration Express
+const app = express();
+
+// Middleware CORS (à appliquer AVANT les routes)
+app.use(cors({
+  origin: ['http://localhost:8100', 'http://gateway:8089'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+app.use(express.json());
+
+// Route API /dashboard
+app.get('/api/analytics/dashboard', async (req, res) => {
+  try {
+    const commandes = await CommandeAnalytics.find().limit(10).sort({ createdAt: -1 });
+    const orders = await OrderAnalytics.find().limit(10).sort({ createdAt: -1 });
+
+    res.status(200).json({
+      commandesCount: commandes.length,
+      ordersCount: orders.length,
+      commandes,
+      orders
+    });
+  } catch (error) {
+    console.error('❌ Erreur récupération dashboard:', error);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+});
+
+// Connexion MongoDB
+const connectDB = async () => {
+  try {
+    await mongoose.connect('mongodb://mongo:27017/analytics', {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    });
+    console.log('✅ Connecté à MongoDB');
+  } catch (err) {
+    console.error('❌ Erreur MongoDB:', err);
+    process.exit(1);
+  }
+};
+
+// Configuration Kafka
+const kafka = new Kafka({
+  clientId: 'analytics-service',
+  brokers: ['kafka:9092'],
+  retry: {
+    initialRetryTime: 100,
+    retries: 10
+  }
+});
+
+const consumer = kafka.consumer({
+  groupId: 'analytics-group',
+  sessionTimeout: 30000,
+  heartbeatInterval: 3000,
+  maxBytesPerPartition: 1048576,
+  maxWaitTimeInMs: 5000
+});
+
+// Traitement des événements Kafka
+async function processOrderEvent(message) {
+  try {
+    const order = JSON.parse(message.value.toString());
+    console.log('🛒 Nouvelle commande reçue:', order.id);
+
+    await OrderAnalytics.create({
+      orderId: order.id,
+      items: order.items,
+      totalAmount: order.amount,
+      createdAt: new Date()
+    });
+
+    console.log('📊 Statistiques mises à jour pour la commande:', order.id);
+  } catch (err) {
+    console.error('❌ Erreur traitement commande:', err);
+  }
+}
+
+async function processCommandeEvent(message) {
+  try {
+    const commande = JSON.parse(message.value.toString());
+    console.log('📩 Événement commande reçu:', commande.id);
+
+    await CommandeAnalytics.create({
+      commandeId: commande.id,
+      client: `${commande.prenomClient} ${commande.nomClient}`.trim(),
+      total: commande.totalCommande,
+      statut: commande.statutCommande,
+      paiement: commande.statutPaiement || 'NON_PAYE',
+      createdAt: new Date()
+    });
+
+    console.log('💾 Commande enregistrée:', commande.id);
+  } catch (err) {
+    console.error('❌ Erreur traitement commande:', err);
+  }
+}
+
+// Connexion Kafka avec reconnexion automatique
+async function connectKafka() {
+  const runConsumer = async () => {
+    await consumer.connect();
+    await consumer.subscribe({ topics: ['order-events', 'command-events'], fromBeginning: false });
+
+    await consumer.run({
+      eachMessage: async ({ topic, message }) => {
+        try {
+          if (topic === 'order-events') await processOrderEvent(message);
+          if (topic === 'command-events') await processCommandeEvent(message);
+        } catch (err) {
+          console.error('❌ Erreur traitement message:', err);
+        }
+      }
+    });
+  };
+
+  const handleError = async (err) => {
+    console.error('💥 Erreur Kafka:', err);
+    try {
+      await consumer.disconnect();
+    } catch (e) {
+      console.error('Erreur déconnexion:', e);
+    }
+    setTimeout(connectKafka, 5000);
+  };
+
+  consumer.on('consumer.crash', handleError);
+  consumer.on('consumer.disconnect', handleError);
+
+  try {
+    await runConsumer();
+    console.log('👂 Consumer Kafka prêt');
+  } catch (err) {
+    await handleError(err);
+  }
+}
+
+// Démarrage du serveur
+const start = async () => {
+  await connectDB();
+  await connectKafka();
+
+  const PORT = 3005; // Tu peux le changer si nécessaire
+  app.listen(PORT, () => {
+    console.log(`🚀 Service analytics sur le port ${PORT}`);
+  });
+};
+
+// Gérer les erreurs non catchées
+process.on('unhandledRejection', (err) => {
+  console.error('🔥 Erreur non gérée:', err);
+});
+
+start();

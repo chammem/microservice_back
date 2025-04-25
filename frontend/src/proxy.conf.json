@@ -1,0 +1,14 @@
+{
+    "/api": {
+      "target": "http://localhost:3005",
+      "secure": false,
+      "changeOrigin": true,
+      "pathRewrite": {"^/api": ""},
+      "logLevel": "debug",
+      "headers": {
+        "Access-Control-Allow-Origin": "http://localhost:8100",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization"
+      }
+    }
+  }
