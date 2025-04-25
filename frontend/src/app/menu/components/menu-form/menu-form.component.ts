@@ -37,7 +37,18 @@ export class MenuFormComponent implements OnInit {
       this.menuForm.patchValue(this.menuItem);
     }
   }
+  get nameControl() {
+    return this.menuForm.get('name');
+  }
+  
+  get descriptionControl() {
+    return this.menuForm.get('description');
+  }
+  
 
+  get priceControl() {
+    return this.menuForm.get('price');
+  }
   onSubmit(): void {
     this.formSubmitted = true;
     if (this.menuForm.valid) {

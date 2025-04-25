@@ -1,19 +1,68 @@
-<form [formGroup]="menuForm" (ngSubmit)="onSubmit()" class="menu-form">
+<div class="form-container">
+  <div class="form-header">
+    <h2>{{ isEditMode ? 'Edit Menu Item' : 'Add New Menu Item' }}</h2>
+    <a [routerLink]="['/menu']" class="back-btn">Back to Menu</a>
+  </div>
+
+  <form [formGroup]="menuForm" (ngSubmit)="onSubmit()" class="menu-form">
     <div class="form-group">
       <label for="name">Name *</label>
       <input 
         type="text" 
         id="name" 
         formControlName="name" 
-        [class.invalid]="menuForm.get('name')?.invalid && (menuForm.get('name')?.touched || formSubmitted)">
-  
-      <!-- Condition d'affichage des erreurs -->
-      <div *ngIf="menuForm.get('name')?.invalid && (menuForm.get('name')?.touched || formSubmitted)" class="error-message">
-        <span *ngIf="menuForm.get('name')?.errors?.['required']">Name is required</span>
-        <span *ngIf="menuForm.get('name')?.errors?.['minlength']">Name must be at least {{ menuForm.get('name')?.errors?.['minlength'].requiredLength }} characters</span>
-      </div>
+        [class.invalid]="nameControl?.invalid && (nameControl?.touched || formSubmitted)">
+      
+      @if (nameControl?.invalid && (nameControl?.touched || formSubmitted)) {
+        <div class="error-message">
+          @if (nameControl?.errors?.['required']) {
+            <span>Name is required</span>
+          } @else if (nameControl?.errors?.['minlength']) {
+            <span>Name must be at least 3 characters</span>
+          }
+        </div>
+      }
     </div>
-  
-    <!-- Autres champs du formulaire -->
-  </form>
-  
+
+    <div class="form-group">
+      <label for="description">Description *</label>
+      <textarea 
+        id="description" 
+        formControlName="description" 
+        rows="3"
+        [class.invalid]="descriptionControl?.invalid && (descriptionControl?.touched || formSubmitted)"></textarea>
+      
+      @if (descriptionControl?.invalid && (descriptionControl?.touched || formSubmitted)) {
+        <div class="error-message">
+          @if (descriptionControl?.errors?.['required']) {
+            <span>Description is required</span>
+          } @else if (descriptionControl?.errors?.['minlength']) {
+            <span>Description must be at least 10 characters</span>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="price">Price ($) *</label>
+        <input 
+          type="number" 
+          id="price" 
+          formControlName="price" 
+          step="0.01"
+          [class.invalid]="priceControl?.invalid && (priceControl?.touched || formSubmitted)">
+        
+        @if (priceControl?.invalid && (priceControl?.touched || formSubmitted)) {
+          <div class="error-message">
+            @if (priceControl?.errors?.['required']) {
+              <span>Price is required</span>
+            } @else if (priceControl?.errors?.['min']) {
+              <span>Price must be greater than $0</span>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="form-group">
+</div>

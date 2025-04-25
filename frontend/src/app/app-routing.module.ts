@@ -28,9 +28,9 @@ export const routes: Routes = [
 
   // Routes du menu
   { path: 'menu', component: MenuListComponent },
-  { path: 'menu/new', component: MenuFormComponent, canActivate: [authGuard] },
+  { path: 'menu/new', component: MenuFormComponent },
   { path: 'menu/:id', component: MenuDetailComponent },
-  { path: 'menu/:id/edit', component: MenuFormComponent, canActivate: [authGuard] },
+  { path: 'menu/:id/edit', component: MenuFormComponent },
 
   {
     path: 'admin',
