@@ -1,0 +1,4 @@
+exit
+db.orderanalytics.find().pretty()
+db.events.find().pretty()
+use analytics

@@ -13,6 +13,7 @@ import { CommonModule } from '@angular/common';
 import { KeycloakService } from './app/services/keycloak.service';
 import { APP_INITIALIZER } from '@angular/core';
 import { KeycloakInterceptor } from './app/core/guards/keycloak.interceptor';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 if (environment.production) {
   enableProdMode();
@@ -33,6 +34,7 @@ bootstrapApplication(AppComponent, {
       useClass: KeycloakInterceptor,
       multi: true
     },
-    FormBuilder // Si tu veux le fournir manuellement, sinon c’est automatique avec ReactiveFormsModule
+    FormBuilder,
+    MatProgressSpinnerModule
   ],
 }).catch((err) => console.error(err));

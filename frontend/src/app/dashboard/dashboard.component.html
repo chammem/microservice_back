@@ -1,0 +1,41 @@
+<!-- dashboard.component.html -->
+<div class="dashboard-container">
+    <h1>Tableau de bord analytique</h1>
+    
+    @if (stats) {
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <h3>Revenue Total</h3>
+          <p class="metric-value">{{ stats.totalRevenue | currency:'EUR':'symbol':'1.2-2' }}</p>
+        </div>
+      </div>
+  
+      <div class="charts-grid">
+        <div class="chart-card">
+          <h3>Commandes par jour</h3>
+          <div class="chart-container">
+            <canvas #ordersChart></canvas>
+          </div>
+        </div>
+  
+        <div class="chart-card">
+          <h3>Top produits</h3>
+          <div class="chart-container">
+            <canvas #productsChart></canvas>
+          </div>
+        </div>
+  
+        <div class="chart-card wide">
+          <h3>Statut des commandes</h3>
+          <div class="chart-container">
+            <canvas #commandesChart></canvas>
+          </div>
+        </div>
+      </div>
+    } @else {
+      <div class="loading-spinner">
+        <mat-spinner></mat-spinner>
+        <p>Chargement des données en temps réel...</p>
+      </div>
+    }
+  </div>

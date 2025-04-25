@@ -9,6 +9,7 @@ import { CommandeComponent } from './commande/commande.component';
 import { ConfirmationComponent } from './confirmation/confirmation.component';
 import { authGuard } from './core/guards/auth.guard';  // Importer le guard
 import { PaymentComponent } from './payment/payment.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 const routes: Routes = [
   {
@@ -21,20 +22,14 @@ const routes: Routes = [
   { path: 'commande', component: CommandeComponent , canActivate: [authGuard]},
   { path: 'confirmation/:orderId', component: ConfirmationComponent , canActivate: [authGuard]},
   { path: 'paiement/:orderId', component: PaymentComponent },
+  { path: 'dashboard', component: DashboardComponent },
+
 
   {
     path: 'admin',
     component: AdminComponent,
     children: [
-      {
-        path: '',
-        redirectTo: 'dashboard',
-        pathMatch: 'full'
-      },
-      {
-        path: 'dashboard',
-        loadComponent: () => import('./demo/dashboard/dashboard.component').then((c) => c.DashboardComponent)
-      },
+     
       {
         path: 'basic',
         loadChildren: () => import('./demo/ui-elements/ui-basic/ui-basic.module').then((m) => m.UiBasicModule)

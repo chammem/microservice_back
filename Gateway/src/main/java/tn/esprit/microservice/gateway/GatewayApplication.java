@@ -20,6 +20,9 @@ public class GatewayApplication {
         return builder.routes()
                 .route("commandes", r->r.path("/commandes/**")
                         .uri("http://commande-service:8086"))
+                .route("analytics", r -> r.path("/api/analytics/**")
+                        .filters(f -> f.rewritePath("/api/analytics/(?<segment>.*)", "/${segment}"))
+                        .uri("http://analytics:3000"))
                 .build();
     }
 }
