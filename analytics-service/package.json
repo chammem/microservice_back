@@ -1,0 +1,22 @@
+{
+  "name": "crud",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "eureka-js-client": "^4.5.0",
+    "express": "^4.21.2",
+    "kafkajs": "^2.2.4",
+    "mongoose": "^8.13.2",
+    "path": "^0.12.7",
+    "socket.io": "^4.8.1",
+    "twig": "^1.17.1",
+    "yup": "^1.4.0"
+  }
+}
