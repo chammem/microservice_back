@@ -1,0 +1,59 @@
+<html lang="fr">
+    <head>
+      <script src="/socket.io/socket.io.js" ></script>
+    </head>
+<body><center>
+        <h2>Créer une Partie</h2>
+            <label for="nomPartie">Nom Partie:</label>
+            <input type="text" id="nompartie" name="nomPartie" required><br><br>
+            
+            <label for="joueur1Id">ID Joueur 1:</label>
+            <input type="text" id="j1" name="joueur1Id" required><br><br>
+            
+            <label for="joueur2Id">ID Joueur 2:</label>
+            <input type="text" id="j2" name="joueur2Id" required><br><br>
+            
+            <button onclick="ajouter()">Envoyer</button>
+            <button onclick="aff()">Afficher Stat</button>
+    </center>
+
+    <script>
+        const socket = io.connect()
+
+        socket.on("partie",(data)=>
+    {
+        p=document.createElement("p")
+            p.innerHTML=("<center>"+"Nom partie : "+data.nompartie+"<br>"+ "ID joueur 1 : "+ data.id1+
+                "<br>"+ "ID joueur 2 : "+ data.id2+" </center>")
+        document.body.append(p)
+    })
+
+    socket.on("aff",(data)=>
+    {
+        p=document.createElement("p")
+            p.innerHTML=("<center>"+"Nom partie : "+nompartie.value+"<br>"+ "Nom joueur 1 : "+data.j1.pseudo+
+                "<br>"+ "score joueur 1 : "+ data.j1.score+ "<br>"+ "sante joueur 1 : "+ data.j1.sante
+                +"<br>"+ "Nom joueur 2 : "+data.j2.pseudo+
+                "<br>"+ "score joueur 2 : "+ data.j2.score+ "<br>"+ "sante joueur 2 : "+ data.j2.sante+"</center>")
+        document.body.append(p)
+    })
+    
+nompartie=document.getElementById("nompartie")
+joueur1=document.getElementById("j1")
+joueur2=document.getElementById("j2")
+
+function ajouter()
+{
+    socket.emit("partie",{nompartie:nompartie.value,id1:joueur1.value,id2:joueur2.value})
+}
+
+function aff()
+{
+    socket.emit("aff",{id1:joueur1.value,id2:joueur2.value})
+}
+
+
+    </script>
+</body>
+</html>
+ 

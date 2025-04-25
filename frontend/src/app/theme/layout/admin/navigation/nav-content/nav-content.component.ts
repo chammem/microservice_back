@@ -10,6 +10,7 @@ import { NavGroupComponent } from './nav-group/nav-group.component';
 
 @Component({
   selector: 'app-nav-content',
+  standalone: true,
   imports: [SharedModule, NavGroupComponent],
   templateUrl: './nav-content.component.html',
   styleUrls: ['./nav-content.component.scss']
@@ -17,43 +18,54 @@ import { NavGroupComponent } from './nav-group/nav-group.component';
 export class NavContentComponent {
   private location = inject(Location);
 
-  // public method
   // version
   title = 'Demo application for version numbering';
   currentApplicationVersion = environment;
 
-  navigations!: NavigationItem[];
-  wrapperWidth: number;
-  windowWidth = window.innerWidth;
+  navigations: NavigationItem[] = NavigationItems;
+  wrapperWidth: number = 0; // Initialisé avec une valeur par défaut
+  windowWidth: number = window.innerWidth;
 
   NavCollapsedMob = output();
 
-  // constructor
-  constructor() {
-    this.navigations = NavigationItems;
-  }
-
   fireOutClick() {
     let current_url = this.location.path();
-    if (this.location['_baseHref']) {
-      current_url = this.location['_baseHref'] + this.location.path();
+    const baseHref = this.getBaseHref(); // Méthode sécurisée pour obtenir le baseHref
+    
+    if (baseHref) {
+      current_url = baseHref + current_url;
     }
-    const link = "a.nav-link[ href='" + current_url + "' ]";
+
+    const link = `a.nav-link[ href='${current_url}' ]`;
     const ele = document.querySelector(link);
-    if (ele !== null && ele !== undefined) {
-      const parent = ele.parentElement;
-      const up_parent = parent.parentElement.parentElement;
-      const last_parent = up_parent.parentElement;
-      if (parent.classList.contains('pcoded-hasmenu')) {
-        parent.classList.add('pcoded-trigger');
-        parent.classList.add('active');
-      } else if (up_parent.classList.contains('pcoded-hasmenu')) {
-        up_parent.classList.add('pcoded-trigger');
-        up_parent.classList.add('active');
-      } else if (last_parent.classList.contains('pcoded-hasmenu')) {
-        last_parent.classList.add('pcoded-trigger');
-        last_parent.classList.add('active');
-      }
+    
+    if (ele) {
+      this.activateMenuItems(ele);
     }
+  }
+
+  private getBaseHref(): string {
+    // Solution plus propre que d'accéder à la propriété privée
+    return document.baseURI.replace(window.location.origin, '');
+  }
+
+  private activateMenuItems(element: Element): void {
+    const parent = element.parentElement;
+    if (!parent) return;
+
+    const up_parent = parent.parentElement?.parentElement;
+    const last_parent = up_parent?.parentElement;
+
+    // Fonction helper pour activer les éléments
+    const activateElement = (el: HTMLElement | null | undefined) => {
+      if (el?.classList.contains('pcoded-hasmenu')) {
+        el.classList.add('pcoded-trigger');
+        el.classList.add('active');
+      }
+    };
+
+    activateElement(parent);
+    activateElement(up_parent);
+    activateElement(last_parent);
   }
 }

@@ -1,4 +1,4 @@
-import { Component , OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CommandeService } from '../services/CommandeService';
 import { ActivatedRoute } from '@angular/router';
@@ -6,23 +6,23 @@ import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-confirmation',
-  imports: [CommonModule,RouterModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './confirmation.component.html',
-  styleUrls : ['./confirmation.component.scss']
+  styleUrls: ['./confirmation.component.scss']
 })
-export class ConfirmationComponent implements OnInit{
+export class ConfirmationComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
     private commandeService: CommandeService
-  ){}
+  ) {}
 
   today = new Date();
 
   nomClient: string = '';
   prenomClient: string = '';
   adresseClient: string = '';
-  orderNumber: number;
+  orderNumber: number = 0; // Initialisé avec une valeur par défaut
   orderId: number | null = null;
   orderItems: any[] = []; // Liste des produits commandés
   subTotal: number = 0;
@@ -48,7 +48,7 @@ export class ConfirmationComponent implements OnInit{
           // Récupérer les produits de la commande à partir du service
           this.commandeService.getProduits().subscribe(produits => {
             this.orderItems = produits;
-            // Calculer le total de la commande (ici tu peux utiliser la somme des produits si besoin)
+            // Calculer le total de la commande
             this.total = this.subTotal + this.shipping;
           });
         },
@@ -60,5 +60,4 @@ export class ConfirmationComponent implements OnInit{
       console.error('ID de commande non trouvé dans l\'URL');
     }
   }
-  
 }

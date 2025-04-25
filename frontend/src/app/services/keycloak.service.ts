@@ -1,6 +1,12 @@
 import { Injectable } from '@angular/core';
 import _Keycloak from 'keycloak-js';
 
+// Déclaration de type pour KeycloakError
+interface KeycloakError {
+  error?: string;
+  [key: string]: any;
+}
+
 // Déclaration de type pour contourner le problème
 interface KeycloakType {
   new (config?: any): any;
@@ -19,11 +25,10 @@ export class KeycloakService {
       realm: 'JobBoardKeycloack',
       clientId: 'angular-client',
       enableLogging: true,
-       flow: 'standard'
+      flow: 'standard'
     });
   }
 
-  
   async init(): Promise<boolean> {
     return this.keycloak.init({
       onLoad: 'login-required',
@@ -32,7 +37,6 @@ export class KeycloakService {
     });
   }
 
-  // Méthodes typées manuellement
   isAuthenticated(): boolean {
     return !!this.keycloak.authenticated;
   }
@@ -40,7 +44,6 @@ export class KeycloakService {
   async login(options?: any): Promise<void> {
     return this.keycloak.login(options);
   }
-
 
   getToken(): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -65,15 +68,17 @@ export class KeycloakService {
         return true;
       } else {
         console.warn('[KEYCLOAK] Token NON rafraîchi (mais encore valide ?).');
-        return true; // parfois Keycloak retourne false si déjà valide
+        return true;
       }
   
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('[KEYCLOAK] Erreur pendant le rafraîchissement du token :', err);
-  
-      if (err && err.error === 'login_required') {
+      
+      const keycloakError = err as KeycloakError;
+      
+      if (keycloakError?.error === 'login_required') {
         console.warn('[KEYCLOAK] Session expirée. Redirection vers login...');
-        await this.keycloak.login(); // reconnecte automatiquement
+        await this.keycloak.login();
       } else {
         console.warn('[KEYCLOAK] Erreur non liée à login, tentative de logout...');
         await this.keycloak.logout();
@@ -85,9 +90,7 @@ export class KeycloakService {
   
   async logout(): Promise<void> {
     await this.keycloak.logout({
-      redirectUri: 'http://localhost:8100' // URL de redirection après logout
+      redirectUri: 'http://localhost:8100'
     });
   }
-
-
 }

@@ -1,241 +1,124 @@
-// angular import
+// angular imports
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-// project import
+// project imports
 import { SharedModule } from 'src/app/theme/shared/shared.module';
 
-declare const AmCharts;
+// AmCharts declaration
+declare const AmCharts: {
+  makeChart: (id: string, config: any) => any;
+};
 
-import '../../../assets/charts/amchart/amcharts.js';
-import '../../../assets/charts/amchart/gauge.js';
-import '../../../assets/charts/amchart/serial.js';
-import '../../../assets/charts/amchart/light.js';
-import '../../../assets/charts/amchart/pie.min.js';
-import '../../../assets/charts/amchart/ammap.min.js';
-import '../../../assets/charts/amchart/usaLow.js';
-import '../../../assets/charts/amchart/radar.js';
-import '../../../assets/charts/amchart/worldLow.js';
+// Data interfaces
+interface MapDataItem {
+  code: string;
+  name: string;
+  value: number;
+  color: string;
+}
 
-import dataJson from 'src/fake-data/map_data';
-import mapColor from 'src/fake-data/map-color-data.json';
+interface LatLongData {
+  [key: string]: {
+    latitude: number;
+    longitude: number;
+  };
+}
+
+interface TableItem {
+  src: string;
+  title: string;
+  text: string;
+  time: string;
+  color: string;
+}
+
+interface SalesItem {
+  title: string;
+  icon: string;
+  amount: string;
+  percentage: string;
+  progress: number;
+  design: string;
+  progress_bg: string;
+}
+
+interface CardItem {
+  design?: string;
+  number: string;
+  text: string;
+  icon: string;
+}
+
+interface SocialCardItem {
+  design: string;
+  icon: string;
+  amount: string;
+  percentage: string;
+  color: string;
+  target: string;
+  progress: number;
+  duration: string;
+  progress2: number;
+  progress_bg: string;
+  progress_bg_2: string;
+}
+
+interface ProgressItem {
+  number: string;
+  amount: string;
+  progress: number;
+  progress_bg: string;
+}
 
 @Component({
   selector: 'app-dashboard',
+  standalone: true,
   imports: [CommonModule, SharedModule],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
-  // life cycle event
-  ngOnInit() {
-    setTimeout(() => {
-      const latlong = dataJson;
+  // Sample data - replace with your actual data
+  tables: TableItem[] = [
+    {
+      src: 'assets/images/user/avatar-1.jpg',
+      title: 'Isabella Christensen',
+      text: 'Requested account activation',
+      time: '11 MAY 12:56',
+      color: 'text-c-green'
+    },
+    {
+      src: 'assets/images/user/avatar-2.jpg',
+      title: 'Ida Jorgensen',
+      text: 'Pending document verification',
+      time: '11 MAY 10:35',
+      color: 'text-c-red'
+    },
+    {
+      src: 'assets/images/user/avatar-3.jpg',
+      title: 'Mathilda Andersen',
+      text: 'Completed profile setup',
+      time: '9 MAY 17:38',
+      color: 'text-c-green'
+    },
+    {
+      src: 'assets/images/user/avatar-1.jpg',
+      title: 'Karla Soreness',
+      text: 'Requires additional information',
+      time: '19 MAY 12:56',
+      color: 'text-c-red'
+    },
+    {
+      src: 'assets/images/user/avatar-2.jpg',
+      title: 'Albert Andersen',
+      text: 'Approved and verified account',
+      time: '21 July 12:56',
+      color: 'text-c-green'
+    }
+  ];
 
-      const mapData = mapColor;
-
-      const minBulletSize = 3;
-      const maxBulletSize = 70;
-      let min = Infinity;
-      let max = -Infinity;
-      let i;
-      let value;
-      for (i = 0; i < mapData.length; i++) {
-        value = mapData[i].value;
-        if (value < min) {
-          min = value;
-        }
-        if (value > max) {
-          max = value;
-        }
-      }
-
-      const maxSquare = maxBulletSize * maxBulletSize * 2 * Math.PI;
-      const minSquare = minBulletSize * minBulletSize * 2 * Math.PI;
-
-      const images = [];
-      for (i = 0; i < mapData.length; i++) {
-        const dataItem = mapData[i];
-        value = dataItem.value;
-
-        let square = ((value - min) / (max - min)) * (maxSquare - minSquare) + minSquare;
-        if (square < minSquare) {
-          square = minSquare;
-        }
-        const size = Math.sqrt(square / (Math.PI * 8));
-        const id = dataItem.code;
-
-        images.push({
-          type: 'circle',
-          theme: 'light',
-          width: size,
-          height: size,
-          color: dataItem.color,
-          longitude: latlong[id].longitude,
-          latitude: latlong[id].latitude,
-          title: dataItem.name + '</br> [ ' + value + ' ]',
-          value: value
-        });
-      }
-
-      // world-low chart
-      AmCharts.makeChart('world-low', {
-        type: 'map',
-        projection: 'eckert6',
-
-        dataProvider: {
-          map: 'worldLow',
-          images: images
-        },
-        export: {
-          enabled: true
-        }
-      });
-
-      const chartDatac = [
-        {
-          day: 'Mon',
-          value: 60
-        },
-        {
-          day: 'Tue',
-          value: 45
-        },
-        {
-          day: 'Wed',
-          value: 70
-        },
-        {
-          day: 'Thu',
-          value: 55
-        },
-        {
-          day: 'Fri',
-          value: 70
-        },
-        {
-          day: 'Sat',
-          value: 55
-        },
-        {
-          day: 'Sun',
-          value: 70
-        }
-      ];
-
-      // widget-line-chart
-      AmCharts.makeChart('widget-line-chart', {
-        type: 'serial',
-        addClassNames: true,
-        defs: {
-          filter: [
-            {
-              x: '-50%',
-              y: '-50%',
-              width: '200%',
-              height: '200%',
-              id: 'blur',
-              feGaussianBlur: {
-                in: 'SourceGraphic',
-                stdDeviation: '30'
-              }
-            },
-            {
-              id: 'shadow',
-              x: '-10%',
-              y: '-10%',
-              width: '120%',
-              height: '120%',
-              feOffset: {
-                result: 'offOut',
-                in: 'SourceAlpha',
-                dx: '0',
-                dy: '20'
-              },
-              feGaussianBlur: {
-                result: 'blurOut',
-                in: 'offOut',
-                stdDeviation: '10'
-              },
-              feColorMatrix: {
-                result: 'blurOut',
-                type: 'matrix',
-                values: '0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .2 0'
-              },
-              feBlend: {
-                in: 'SourceGraphic',
-                in2: 'blurOut',
-                mode: 'normal'
-              }
-            }
-          ]
-        },
-        fontSize: 15,
-        dataProvider: chartDatac,
-        autoMarginOffset: 0,
-        marginRight: 0,
-        categoryField: 'day',
-        categoryAxis: {
-          color: '#fff',
-          gridAlpha: 0,
-          axisAlpha: 0,
-          lineAlpha: 0,
-          offset: -20,
-          inside: true
-        },
-        valueAxes: [
-          {
-            fontSize: 0,
-            inside: true,
-            gridAlpha: 0,
-            axisAlpha: 0,
-            lineAlpha: 0,
-            minimum: 0,
-            maximum: 100
-          }
-        ],
-        chartCursor: {
-          valueLineEnabled: false,
-          valueLineBalloonEnabled: false,
-          cursorAlpha: 0,
-          zoomable: false,
-          valueZoomable: false,
-          cursorColor: '#fff',
-          categoryBalloonColor: '#51b4e6',
-          valueLineAlpha: 0
-        },
-        graphs: [
-          {
-            id: 'g1',
-            type: 'line',
-            valueField: 'value',
-            lineColor: '#ffffff',
-            lineAlpha: 1,
-            lineThickness: 3,
-            fillAlphas: 0,
-            showBalloon: true,
-            balloon: {
-              drop: true,
-              adjustBorderColor: false,
-              color: '#222',
-              fillAlphas: 0.2,
-              bullet: 'round',
-              bulletBorderAlpha: 1,
-              bulletSize: 5,
-              hideBulletsCount: 50,
-              lineThickness: 2,
-              useLineColorForBulletBorder: true,
-              valueField: 'value',
-              balloonText: '<span style="font-size:18px;">[[value]]</span>'
-            }
-          }
-        ]
-      });
-    }, 500);
-  }
-
-  // public method
-  sales = [
+  sales: SalesItem[] = [
     {
       title: 'Daily Sales',
       icon: 'icon-arrow-up text-c-green',
@@ -265,7 +148,7 @@ export class DashboardComponent implements OnInit {
     }
   ];
 
-  card = [
+  card: CardItem[] = [
     {
       design: 'border-bottom',
       number: '235',
@@ -279,7 +162,7 @@ export class DashboardComponent implements OnInit {
     }
   ];
 
-  social_card = [
+  social_card: SocialCardItem[] = [
     {
       design: 'col-md-12',
       icon: 'fab fa-facebook-f text-primary',
@@ -321,7 +204,7 @@ export class DashboardComponent implements OnInit {
     }
   ];
 
-  progressing = [
+  progressing: ProgressItem[] = [
     {
       number: '5',
       amount: '384',
@@ -354,41 +237,193 @@ export class DashboardComponent implements OnInit {
     }
   ];
 
-  tables = [
-    {
-      src: 'assets/images/user/avatar-1.jpg',
-      title: 'Isabella Christensen',
-      text: 'Requested account activation',
-      time: '11 MAY 12:56',
-      color: 'text-c-green'
-    },
-    {
-      src: 'assets/images/user/avatar-2.jpg',
-      title: 'Ida Jorgensen',
-      text: 'Pending document verification',
-      time: '11 MAY 10:35',
-      color: 'text-c-red'
-    },
-    {
-      src: 'assets/images/user/avatar-3.jpg',
-      title: 'Mathilda Andersen',
-      text: 'Completed profile setup',
-      time: '9 MAY 17:38',
-      color: 'text-c-green'
-    },
-    {
-      src: 'assets/images/user/avatar-1.jpg',
-      title: 'Karla Soreness',
-      text: 'Requires additional information',
-      time: '19 MAY 12:56',
-      color: 'text-c-red'
-    },
-    {
-      src: 'assets/images/user/avatar-2.jpg',
-      title: 'Albert Andersen',
-      text: 'Approved and verified account',
-      time: '21 July 12:56',
-      color: 'text-c-green'
-    }
+  // Map data - replace with your actual data
+  private dataJson: LatLongData = {
+    US: { latitude: 37.09, longitude: -95.71 },
+    FR: { latitude: 46.23, longitude: 2.21 }
+    // Add more countries as needed
+  };
+
+  private mapColor: MapDataItem[] = [
+    { code: 'US', name: 'United States', value: 100, color: '#FF0000' },
+    { code: 'FR', name: 'France', value: 50, color: '#0000FF' }
+    // Add more countries as needed
   ];
+
+  ngOnInit(): void {
+    setTimeout(() => {
+      this.initCharts();
+    }, 500);
+  }
+
+  private initCharts(): void {
+    this.initWorldMap();
+    this.initWidgetChart();
+  }
+
+  private initWorldMap(): void {
+    const minBulletSize = 3;
+    const maxBulletSize = 70;
+    let min = Infinity;
+    let max = -Infinity;
+
+    this.mapColor.forEach(item => {
+      if (item.value < min) min = item.value;
+      if (item.value > max) max = item.value;
+    });
+
+    const maxSquare = maxBulletSize * maxBulletSize * 2 * Math.PI;
+    const minSquare = minBulletSize * minBulletSize * 2 * Math.PI;
+
+    const images = this.mapColor.map(dataItem => {
+      let square = ((dataItem.value - min) / (max - min)) * (maxSquare - minSquare) + minSquare;
+      square = Math.max(square, minSquare);
+      const size = Math.sqrt(square / (Math.PI * 8));
+      const id = dataItem.code;
+
+      return {
+        type: 'circle',
+        theme: 'light',
+        width: size,
+        height: size,
+        color: dataItem.color,
+        longitude: this.dataJson[id].longitude,
+        latitude: this.dataJson[id].latitude,
+        title: `${dataItem.name}<br>[ ${dataItem.value} ]`,
+        value: dataItem.value
+      };
+    });
+
+    AmCharts.makeChart('world-low', {
+      type: 'map',
+      projection: 'eckert6',
+      dataProvider: {
+        map: 'worldLow',
+        images: images
+      },
+      export: {
+        enabled: true
+      }
+    });
+  }
+
+  private initWidgetChart(): void {
+    const chartData = [
+      { day: 'Mon', value: 60 },
+      { day: 'Tue', value: 45 },
+      { day: 'Wed', value: 70 },
+      { day: 'Thu', value: 55 },
+      { day: 'Fri', value: 70 },
+      { day: 'Sat', value: 55 },
+      { day: 'Sun', value: 70 }
+    ];
+
+    AmCharts.makeChart('widget-line-chart', {
+      type: 'serial',
+      addClassNames: true,
+      defs: {
+        filter: [
+          {
+            x: '-50%',
+            y: '-50%',
+            width: '200%',
+            height: '200%',
+            id: 'blur',
+            feGaussianBlur: {
+              in: 'SourceGraphic',
+              stdDeviation: '30'
+            }
+          },
+          {
+            id: 'shadow',
+            x: '-10%',
+            y: '-10%',
+            width: '120%',
+            height: '120%',
+            feOffset: {
+              result: 'offOut',
+              in: 'SourceAlpha',
+              dx: '0',
+              dy: '20'
+            },
+            feGaussianBlur: {
+              result: 'blurOut',
+              in: 'offOut',
+              stdDeviation: '10'
+            },
+            feColorMatrix: {
+              result: 'blurOut',
+              type: 'matrix',
+              values: '0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .2 0'
+            },
+            feBlend: {
+              in: 'SourceGraphic',
+              in2: 'blurOut',
+              mode: 'normal'
+            }
+          }
+        ]
+      },
+      fontSize: 15,
+      dataProvider: chartData,
+      autoMarginOffset: 0,
+      marginRight: 0,
+      categoryField: 'day',
+      categoryAxis: {
+        color: '#fff',
+        gridAlpha: 0,
+        axisAlpha: 0,
+        lineAlpha: 0,
+        offset: -20,
+        inside: true
+      },
+      valueAxes: [
+        {
+          fontSize: 0,
+          inside: true,
+          gridAlpha: 0,
+          axisAlpha: 0,
+          lineAlpha: 0,
+          minimum: 0,
+          maximum: 100
+        }
+      ],
+      chartCursor: {
+        valueLineEnabled: false,
+        valueLineBalloonEnabled: false,
+        cursorAlpha: 0,
+        zoomable: false,
+        valueZoomable: false,
+        cursorColor: '#fff',
+        categoryBalloonColor: '#51b4e6',
+        valueLineAlpha: 0
+      },
+      graphs: [
+        {
+          id: 'g1',
+          type: 'line',
+          valueField: 'value',
+          lineColor: '#ffffff',
+          lineAlpha: 1,
+          lineThickness: 3,
+          fillAlphas: 0,
+          showBalloon: true,
+          balloon: {
+            drop: true,
+            adjustBorderColor: false,
+            color: '#222',
+            fillAlphas: 0.2,
+            bullet: 'round',
+            bulletBorderAlpha: 1,
+            bulletSize: 5,
+            hideBulletsCount: 50,
+            lineThickness: 2,
+            useLineColorForBulletBorder: true,
+            valueField: 'value',
+            balloonText: '<span style="font-size:18px;">[[value]]</span>'
+          }
+        }
+      ]
+    });
+  }
 }

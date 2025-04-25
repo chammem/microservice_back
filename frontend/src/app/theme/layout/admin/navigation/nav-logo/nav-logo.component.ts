@@ -7,15 +7,16 @@ import { SharedModule } from 'src/app/theme/shared/shared.module';
 
 @Component({
   selector: 'app-nav-logo',
+  standalone: true,
   imports: [SharedModule, RouterModule],
   templateUrl: './nav-logo.component.html',
   styleUrls: ['./nav-logo.component.scss']
 })
 export class NavLogoComponent {
   // public props
-  @Input() navCollapsed: boolean;
+  @Input() navCollapsed: boolean = false; // Initialisé avec une valeur par défaut
   NavCollapse = output();
-  windowWidth = window.innerWidth;
+  windowWidth: number = window.innerWidth;
 
   // public method
   navCollapse() {

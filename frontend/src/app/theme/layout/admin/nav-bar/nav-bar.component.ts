@@ -10,6 +10,7 @@ import { NavRightComponent } from './nav-right/nav-right.component';
 
 @Component({
   selector: 'app-nav-bar',
+  standalone: true,
   imports: [SharedModule, NavLeftComponent, NavRightComponent, RouterModule, CommonModule],
   templateUrl: './nav-bar.component.html',
   styleUrls: ['./nav-bar.component.scss']
@@ -17,18 +18,10 @@ import { NavRightComponent } from './nav-right/nav-right.component';
 export class NavBarComponent {
   // public props
   readonly NavCollapsedMob = output();
-  navCollapsedMob;
-  headerStyle: string;
-  menuClass: boolean;
-  collapseStyle: string;
-
-  // constructor
-  constructor() {
-    this.navCollapsedMob = false;
-    this.headerStyle = '';
-    this.menuClass = false;
-    this.collapseStyle = 'none';
-  }
+  navCollapsedMob: boolean = false;
+  headerStyle: string = '';
+  menuClass: boolean = false;
+  collapseStyle: string = 'none';
 
   // public method
   toggleMobOption() {
@@ -37,7 +30,6 @@ export class NavBarComponent {
     this.collapseStyle = this.menuClass ? 'block' : 'none';
   }
 
-  // this is for eslint rule
   handleKeyDown(event: KeyboardEvent): void {
     if (event.key === 'Escape') {
       this.closeMenu();
@@ -45,8 +37,9 @@ export class NavBarComponent {
   }
 
   closeMenu() {
-    if (document.querySelector('app-navigation.pcoded-navbar').classList.contains('mob-open')) {
-      document.querySelector('app-navigation.pcoded-navbar').classList.remove('mob-open');
+    const navbar = document.querySelector('app-navigation.pcoded-navbar');
+    if (navbar?.classList.contains('mob-open')) {
+      navbar.classList.remove('mob-open');
     }
   }
 }

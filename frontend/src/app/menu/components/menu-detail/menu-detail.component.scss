@@ -1,0 +1,36 @@
+.detail-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+  }
+  
+  .detail-header h2 {
+    font-size: 24px;
+    color: #333;
+    margin: 0;
+  }
+  
+  .back-btn {
+    background-color: #757575;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+  }
+  
+  .back-btn:hover {
+    background-color: #616161;
+  }
+  
+  .loading, .error {
+    padding: 40px;
+    text-align: center;
+  }

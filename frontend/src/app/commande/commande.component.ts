@@ -108,11 +108,11 @@ export class CommandeComponent implements OnInit {
         state: { total: this.totalCommande }
       });    } catch (error) {
       console.error('Error:', error);
-      if (error.status === 401) {
-        await this.keycloak.login();
-      } else {
-        alert('Error: ' + error.message);
-      }
+      // if (error.status === 401) {
+      //   await this.keycloak.login();
+      // } else {
+      //   alert('Error: ' + error.message);
+      // }
     }
   }
   
